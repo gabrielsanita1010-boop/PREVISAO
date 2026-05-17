@@ -231,13 +231,139 @@ body{
 }
 
 /* ── CONTEÚDO ── */
+.app-layout{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:0;
+  max-width:1100px;
+  margin:0 auto;
+}
+@media(min-width:860px){
+  .app-layout{
+    grid-template-columns:1fr 280px;
+    align-items:start;
+  }
+}
+
 .app-body{
   padding:16px;
-  max-width:680px;
-  margin:0 auto;
   display:flex;flex-direction:column;
   gap:14px;
+  min-width:0;
 }
+
+/* ── PAINEL LATERAL DE CLIENTES ── */
+.painel-clientes{
+  padding:16px 16px 16px 0;
+  position:sticky;
+  top:56px; /* altura do header */
+  max-height:calc(100vh - 56px);
+  overflow-y:auto;
+  display:none; /* oculto em mobile */
+}
+@media(min-width:860px){
+  .painel-clientes{display:block}
+}
+.painel-clientes::-webkit-scrollbar{width:4px}
+.painel-clientes::-webkit-scrollbar-track{background:transparent}
+.painel-clientes::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
+
+.painel-titulo{
+  font-family:var(--mono);font-size:10px;
+  text-transform:uppercase;letter-spacing:1.5px;
+  color:var(--muted2);
+  padding:8px 10px;margin-bottom:6px;
+  display:flex;justify-content:space-between;align-items:center;
+}
+.painel-titulo span{
+  background:var(--card2);border:1px solid var(--border2);
+  border-radius:20px;padding:1px 7px;
+  font-size:10px;color:var(--accent);
+}
+
+.cliente-item-painel{
+  display:flex;align-items:center;gap:8px;
+  padding:8px 10px;
+  border-radius:8px;
+  cursor:pointer;
+  transition:background .15s;
+  border:1px solid transparent;
+  margin-bottom:3px;
+}
+.cliente-item-painel:hover{background:var(--card2)}
+.cliente-item-painel.ativo{
+  background:var(--card2);
+  border-color:var(--border2);
+}
+.cli-dot{
+  width:8px;height:8px;border-radius:50%;flex-shrink:0;
+}
+.cli-dot.pendente{background:var(--warn)}
+.cli-dot.ok{background:var(--accent)}
+.cli-dot.sem-venda{background:var(--muted)}
+.cli-info{flex:1;min-width:0}
+.cli-nome{
+  font-size:12px;font-weight:700;
+  color:var(--text);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  line-height:1.3;
+}
+.cli-nome.pendente{color:var(--muted2)}
+.cli-num{
+  font-family:var(--mono);font-size:10px;
+  color:var(--muted2);
+}
+
+/* Botão mobile para abrir painel */
+.btn-lista-clientes{
+  display:flex;
+  align-items:center;gap:6px;
+  background:var(--card);
+  border:1px solid var(--border2);
+  color:var(--muted2);
+  border-radius:var(--r);
+  padding:8px 12px;
+  font-size:12px;font-family:var(--mono);
+  cursor:pointer;transition:all .2s;
+  width:100%;margin-bottom:14px;
+}
+.btn-lista-clientes:hover{border-color:var(--accent);color:var(--accent)}
+@media(min-width:860px){.btn-lista-clientes{display:none}}
+
+/* Drawer mobile do painel */
+.drawer-overlay{
+  position:fixed;inset:0;
+  background:rgba(10,13,18,.8);
+  z-index:200;
+  display:none;
+}
+.drawer-overlay.aberto{display:block}
+.drawer{
+  position:fixed;right:0;top:0;bottom:0;
+  width:280px;
+  background:var(--surface);
+  border-left:1px solid var(--border2);
+  z-index:201;
+  transform:translateX(100%);
+  transition:transform .3s cubic-bezier(.4,0,.2,1);
+  overflow-y:auto;
+  padding:20px 14px;
+}
+.drawer.aberto{transform:translateX(0)}
+.drawer-header{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:14px;
+}
+.drawer-titulo{
+  font-family:var(--mono);font-size:11px;
+  text-transform:uppercase;letter-spacing:1.5px;
+  color:var(--muted2);
+}
+.drawer-fechar{
+  background:none;border:none;color:var(--muted2);
+  font-size:18px;cursor:pointer;padding:0;line-height:1;
+}
+.drawer-fechar:hover{color:var(--text)}
 
 /* ── SEÇÕES ── */
 .secao{
@@ -374,19 +500,6 @@ body{
 }
 .kg-valor{color:var(--accent);font-weight:700;font-size:15px}
 .kg-unid{color:var(--muted2);font-size:11px}
-.form-obs{
-  width:100%;
-  background:var(--card);
-  border:1px solid var(--border2);
-  color:var(--text);
-  border-radius:var(--r);
-  padding:9px 11px;
-  font-size:13px;font-family:var(--sans);
-  outline:none;resize:vertical;min-height:56px;
-  transition:border-color .2s;
-}
-.form-obs:focus{border-color:var(--blue)}
-
 .form-acoes{
   display:grid;
   grid-template-columns:1fr auto;
@@ -459,12 +572,6 @@ body{
 .item-kg{
   font-family:var(--mono);font-size:13px;
   color:var(--accent);font-weight:700;
-}
-.item-obs{
-  font-size:11px;color:var(--muted2);
-  margin-top:5px;font-style:italic;
-  border-top:1px solid var(--border);
-  padding-top:5px;
 }
 .item-acoes{
   display:flex;gap:6px;margin-top:8px;
@@ -748,7 +855,16 @@ body{
   </div>
 
   <!-- CORPO -->
+  <div class="app-layout">
+
+  <!-- COLUNA PRINCIPAL -->
   <div class="app-body">
+
+    <!-- Botão mobile para ver lista de clientes -->
+    <button class="btn-lista-clientes" onclick="abrirDrawer()">
+      📋 Ver lista de clientes
+      <span id="btn-pendentes-badge" style="margin-left:auto;background:var(--warn);color:#000;border-radius:20px;padding:1px 7px;font-size:10px"></span>
+    </button>
 
     <!-- RESUMO RÁPIDO -->
     <div class="resumo-strip">
@@ -847,11 +963,6 @@ body{
             </div>
           </div>
 
-          <!-- Observação -->
-          <div class="form-full">
-            <label class="form-label">Observação (opcional)</label>
-            <textarea class="form-obs" id="f-obs" placeholder="Ex: entrega parcial, cliente solicitou..."></textarea>
-          </div>
         </div>
 
         <div class="form-acoes">
@@ -910,7 +1021,28 @@ body{
     </div>
 
   </div><!-- /app-body -->
+
+  <!-- PAINEL LATERAL DE CLIENTES (desktop) -->
+  <div class="painel-clientes">
+    <div class="painel-titulo">
+      Clientes
+      <span id="painel-pendentes">0 pendentes</span>
+    </div>
+    <div id="painel-lista"></div>
+  </div>
+
+  </div><!-- /app-layout -->
 </div><!-- /app -->
+
+<!-- DRAWER MOBILE -->
+<div class="drawer-overlay" id="drawer-overlay" onclick="fecharDrawer()"></div>
+<div class="drawer" id="drawer">
+  <div class="drawer-header">
+    <span class="drawer-titulo">Clientes</span>
+    <button class="drawer-fechar" onclick="fecharDrawer()">✕</button>
+  </div>
+  <div id="drawer-lista"></div>
+</div>
 
 <script>
 // ════════════════════════════════════════════════
@@ -1093,24 +1225,43 @@ function unidadeParaTipo(unidade) {
 
 // ════════════════════════════════════════════════
 // PREENCHE SELECT DE PRODUTOS
+// Tenta todas as variações de nome de campo que o
+// Apps Script pode retornar (maiúsculo/minúsculo)
 // ════════════════════════════════════════════════
 function preencherSelectProdutos() {
   const sel = document.getElementById("f-produto");
   sel.innerHTML = '<option value="">Selecione um produto...</option>';
+
+  if (!estado.produtos || estado.produtos.length === 0) {
+    console.warn("PREVFISH: nenhum produto carregado. Verifique aba d_produtos na planilha.");
+    return;
+  }
+
+  // Log para diagnóstico — mostra as chaves do primeiro produto
+  console.log("PREVFISH: campos do produto[0]:", Object.keys(estado.produtos[0]));
+
   estado.produtos.forEach(p => {
-    const cod  = String(p.COD_PRODUTO || p.cod_produto || p.codigo || "");
-    const nome = String(p.PRODUTO     || p.produto     || p.nome   || "");
-    if (!cod && !nome) return;
-    const op       = document.createElement("option");
-    op.value       = cod;
-    op.dataset.nome = nome;
-    op.textContent = nome || cod;
-    // Guarda outros campos relevantes
-    op.dataset.fase    = p.FASE    || p.fase    || "";
-    op.dataset.subGrupo= p.SUB_GRUPO||p.sub_grupo||"";
-    op.dataset.pellet  = p.PELLET  || p.pellet  || "";
+    // Tenta todas as variações de chave possíveis
+    const cod  = String(
+      p.COD_PRODUTO ?? p.cod_produto ?? p.Codigo ?? p.codigo ?? p.COD ?? p.cod ?? ""
+    ).trim();
+    const nome = String(
+      p.PRODUTO ?? p.produto ?? p.Nome ?? p.nome ?? p.DESCRICAO ?? p.descricao ?? ""
+    ).trim();
+
+    if (!nome) return; // ignora linhas sem nome
+
+    const op            = document.createElement("option");
+    op.value            = cod || nome; // usa nome como fallback de valor
+    op.dataset.nome     = nome;
+    op.dataset.fase     = String(p.FASE     ?? p.fase     ?? "");
+    op.dataset.subGrupo = String(p.SUB_GRUPO?? p.sub_grupo?? p.SUBGRUPO ?? "");
+    op.dataset.pellet   = String(p.PELLET   ?? p.pellet   ?? "");
+    op.textContent      = nome;
     sel.appendChild(op);
   });
+
+  console.log(`PREVFISH: ${sel.options.length - 1} produtos carregados no select.`);
 }
 
 // ════════════════════════════════════════════════
@@ -1176,8 +1327,9 @@ function atualizarClienteAtual() {
   document.getElementById("btn-ant").disabled   = idx === 0;
   document.getElementById("btn-prox").disabled  = idx === estado.clientes.length - 1;
 
-  // Progresso
+  // Progresso e painel lateral
   atualizarProgresso();
+  renderizarPainelClientes();
 
   // Limpa formulário e renderiza lista
   limparFormulario();
@@ -1205,14 +1357,13 @@ function adicionarItem() {
   const selProd = document.getElementById("f-produto");
   const tipo    = document.getElementById("f-tipo").value;
   const qtd     = parseFloat(document.getElementById("f-qtd").value) || 0;
-  const obs     = document.getElementById("f-obs").value.trim();
 
   if (!selProd.value) { toast("Selecione um produto.", "warn"); return; }
   if (qtd <= 0)       { toast("Informe uma quantidade válida.", "warn"); return; }
 
-  const op        = selProd.options[selProd.selectedIndex];
-  const pesoU     = KG_POR_UNIDADE[tipo] || 1;
-  const totalKg   = qtd * pesoU;
+  const op      = selProd.options[selProd.selectedIndex];
+  const pesoU   = KG_POR_UNIDADE[tipo] || 1;
+  const totalKg = qtd * pesoU;
 
   const item = {
     id:          estado.editandoId || gerarId(),
@@ -1222,10 +1373,9 @@ function adicionarItem() {
     quantidade:  qtd,
     pesoLiquido: pesoU,
     totalKg,
-    observacao:  obs,
-    fase:        op.dataset.fase    || "",
-    subGrupo:    op.dataset.subGrupo|| "",
-    pellet:      op.dataset.pellet  || "",
+    fase:        op.dataset.fase     || "",
+    subGrupo:    op.dataset.subGrupo || "",
+    pellet:      op.dataset.pellet   || "",
   };
 
   if (estado.editandoId) {
@@ -1280,7 +1430,6 @@ function renderizarLista() {
         <span>Peso unit: <strong>${item.pesoLiquido} kg</strong></span>
         <span class="item-kg">⟹ ${item.totalKg % 1 === 0 ? item.totalKg : item.totalKg.toFixed(2)} kg</span>
       </div>
-      ${item.observacao ? `<div class="item-obs">💬 ${item.observacao}</div>` : ""}
       <div class="item-acoes">
         <button class="btn-edit" onclick="editarItem('${item.id}')">✏️ Editar</button>
         <button class="btn-del"  onclick="excluirItem('${item.id}')">🗑</button>
@@ -1306,7 +1455,6 @@ function editarItem(id) {
   document.getElementById("f-produto").value = item.codProduto;
   document.getElementById("f-tipo").value    = item.tipo;
   document.getElementById("f-qtd").value     = item.quantidade;
-  document.getElementById("f-obs").value     = item.observacao || "";
   calcularKg();
 
   // Exibe chip de edição
@@ -1346,8 +1494,8 @@ function limparFormulario() {
   document.getElementById("f-produto").value = "";
   document.getElementById("f-tipo").value    = "Saco";
   document.getElementById("f-qtd").value     = "";
-  document.getElementById("f-obs").value     = "";
   document.getElementById("kg-valor").textContent = "0";
+}
 }
 
 // ════════════════════════════════════════════════
@@ -1471,6 +1619,56 @@ function atualizarResumo() {
       : Math.round(totalKg) + "";
 
   atualizarProgresso();
+  renderizarPainelClientes();
+}
+
+// ════════════════════════════════════════════════
+// PAINEL LATERAL DE CLIENTES
+// ════════════════════════════════════════════════
+function renderizarPainelClientes() {
+  const pendentes = estado.clientes.filter(c =>
+    (estado.sessao[c.codCliente]?.status || "pendente") === "pendente"
+  ).length;
+
+  // Atualiza badge do botão mobile
+  const badge = document.getElementById("btn-pendentes-badge");
+  if (badge) badge.textContent = pendentes > 0 ? `${pendentes} pendentes` : "✓ todos atendidos";
+
+  // Atualiza contador do painel desktop
+  const painelPend = document.getElementById("painel-pendentes");
+  if (painelPend) painelPend.textContent = pendentes > 0 ? `${pendentes} pendentes` : "✓ todos";
+
+  // Renderiza nas duas listas (painel desktop + drawer mobile)
+  ["painel-lista","drawer-lista"].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.innerHTML = "";
+    estado.clientes.forEach((c, i) => {
+      const status = estado.sessao[c.codCliente]?.status || "pendente";
+      const ativo  = i === estado.clienteIdx;
+      const div    = document.createElement("div");
+      div.className= `cliente-item-painel${ativo ? " ativo" : ""}`;
+      div.onclick  = () => { irClienteDireto(i); fecharDrawer(); };
+      div.innerHTML= `
+        <div class="cli-dot ${status}"></div>
+        <div class="cli-info">
+          <div class="cli-nome ${status === "pendente" ? "pendente" : ""}">${c.nomeCliente}</div>
+          <div class="cli-num">#${c.codCliente}</div>
+        </div>
+      `;
+      el.appendChild(div);
+    });
+  });
+}
+
+// ── Drawer mobile ──
+function abrirDrawer() {
+  document.getElementById("drawer-overlay").classList.add("aberto");
+  document.getElementById("drawer").classList.add("aberto");
+}
+function fecharDrawer() {
+  document.getElementById("drawer-overlay").classList.remove("aberto");
+  document.getElementById("drawer").classList.remove("aberto");
 }
 
 // ════════════════════════════════════════════════
