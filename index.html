@@ -1,189 +1,1546 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Previsão de Vendas</title>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>PREVFISH — Previsão de Vendas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet"/>
 <style>
-  :root {
-    --bg:#0c0f14; --surface:#131820; --card:#1a2030; --border:#222c3c;
-    --accent:#00e5a0; --accent2:#00aaff; --warn:#ff9800;
-    --text:#e8edf5; --muted:#5a6a82; --danger:#ff4d6d;
-    --radius:10px;
-  }
-  *{box-sizing:border-box;margin:0;padding:0}
-  body{background:var(--bg);color:var(--text);font-family:sans-serif;font-size:14px;min-height:100vh}
+/* ══════════════════════════════════════════
+   VARIÁVEIS E RESET
+══════════════════════════════════════════ */
+:root {
+  --bg:        #0a0d12;
+  --surface:   #111520;
+  --card:      #161c28;
+  --card2:     #1c2436;
+  --border:    #1e2a3e;
+  --border2:   #253047;
+  --accent:    #00e5a0;
+  --accent-dim:#00a870;
+  --blue:      #2196f3;
+  --warn:      #f59e0b;
+  --danger:    #ef4444;
+  --text:      #dde5f0;
+  --muted:     #4e6080;
+  --muted2:    #7a90b0;
+  --mono:      'JetBrains Mono', monospace;
+  --sans:      'Syne', sans-serif;
+  --r:         10px;
+  --r2:        16px;
+  --shadow:    0 4px 24px rgba(0,0,0,.5);
+}
 
-  /* LOADING */
-  #loading{position:fixed;inset:0;background:rgba(12,15,20,.92);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;gap:16px}
-  .spinner{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite}
-  @keyframes spin{to{transform:rotate(360deg)}}
-  #loading p{color:var(--muted);font-size:13px}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--sans);
+  font-size:14px;
+  min-height:100vh;
+  line-height:1.5;
+}
 
-  /* TOAST */
-  .toast{position:fixed;bottom:28px;right:28px;background:var(--card);border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:var(--radius);padding:12px 20px;font-size:13px;z-index:9998;transform:translateY(80px);opacity:0;transition:all .3s;max-width:320px}
-  .toast.show{transform:translateY(0);opacity:1}
-  .toast.error{border-left-color:var(--danger)}
+/* ══════════════════════════════════════════
+   LOADING OVERLAY
+══════════════════════════════════════════ */
+#loading{
+  position:fixed;inset:0;
+  background:rgba(10,13,18,.96);
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  z-index:9999;gap:14px;
+}
+.spinner{
+  width:38px;height:38px;
+  border:2.5px solid var(--border2);
+  border-top-color:var(--accent);
+  border-radius:50%;
+  animation:spin .65s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+#loading p{color:var(--muted2);font-family:var(--mono);font-size:12px}
 
-  /* MODAL CONEXÃO */
-  .modal-overlay{position:fixed;inset:0;background:rgba(12,15,20,.78);display:flex;align-items:center;justify-content:center;z-index:200}
-  .modal{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:30px 32px;width:460px;max-width:95vw}
-  .modal h2{font-size:20px;font-weight:800;margin-bottom:6px}
-  .modal-desc{color:var(--muted);font-size:13px;margin-bottom:20px;line-height:1.5}
-  .form-group{margin-bottom:16px}
-  .form-group label{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:6px}
-  .form-group input{width:100%;background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:9px 12px;font-size:13px;outline:none}
-  .form-group input:focus{border-color:var(--accent2)}
-  .hint-box{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-size:11px;color:var(--muted);margin-bottom:16px;line-height:1.6}
-  .hint-box strong{color:var(--accent2)}
-  .btn-primary{width:100%;background:var(--accent);color:#000;border:none;border-radius:var(--radius);padding:11px;font-weight:700;font-size:14px;cursor:pointer;transition:opacity .15s}
-  .btn-primary:hover{opacity:.85}
-  .btn-primary:disabled{opacity:.5;cursor:not-allowed}
+/* ══════════════════════════════════════════
+   TOAST
+══════════════════════════════════════════ */
+.toast{
+  position:fixed;bottom:24px;right:16px;left:16px;
+  max-width:360px;margin:auto;
+  background:var(--card);
+  border:1px solid var(--border2);
+  border-left:3px solid var(--accent);
+  border-radius:var(--r);
+  padding:11px 16px;
+  font-size:13px;font-family:var(--mono);
+  z-index:9998;
+  transform:translateY(100px);opacity:0;
+  transition:all .3s cubic-bezier(.4,0,.2,1);
+}
+.toast.show{transform:translateY(0);opacity:1}
+.toast.error{border-left-color:var(--danger)}
+.toast.warn{border-left-color:var(--warn)}
 
-  /* LAYOUT PRINCIPAL — placeholder para o layout definitivo */
-  #app{display:none;padding:30px 24px;max-width:1200px;margin:0 auto}
-  #app h1{font-size:22px;font-weight:800;color:var(--accent);margin-bottom:8px}
-  #app .info{color:var(--muted);font-size:13px;margin-bottom:24px}
-  .dados-json{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;font-size:12px;color:var(--accent2);white-space:pre-wrap;word-break:break-all;max-height:400px;overflow:auto}
-  .btn-settings{margin-top:16px;background:var(--card);border:1px solid var(--border);color:var(--muted);border-radius:7px;padding:7px 14px;cursor:pointer;font-size:13px}
-  .btn-settings:hover{border-color:var(--accent2);color:var(--text)}
+/* ══════════════════════════════════════════
+   TELA DE LOGIN / SELEÇÃO DE VENDEDOR
+══════════════════════════════════════════ */
+#tela-login{
+  position:fixed;inset:0;
+  background:var(--bg);
+  display:flex;align-items:center;justify-content:center;
+  z-index:500;
+  padding:20px;
+}
+.login-box{
+  background:var(--surface);
+  border:1px solid var(--border2);
+  border-radius:var(--r2);
+  padding:32px 28px;
+  width:100%;max-width:440px;
+  box-shadow:var(--shadow);
+}
+.login-logo{
+  font-family:var(--mono);
+  font-size:11px;letter-spacing:3px;
+  color:var(--accent);
+  text-transform:uppercase;
+  margin-bottom:6px;
+}
+.login-box h2{
+  font-size:26px;font-weight:800;
+  color:var(--text);
+  margin-bottom:4px;
+}
+.login-sub{
+  color:var(--muted2);font-size:13px;
+  margin-bottom:24px;
+}
+.field{margin-bottom:14px}
+.field label{
+  display:block;font-family:var(--mono);
+  font-size:10px;letter-spacing:1px;
+  text-transform:uppercase;color:var(--muted2);
+  margin-bottom:6px;
+}
+.field select, .field input{
+  width:100%;
+  background:var(--card);
+  border:1px solid var(--border2);
+  color:var(--text);
+  border-radius:var(--r);
+  padding:10px 12px;
+  font-size:14px;font-family:var(--sans);
+  outline:none;
+  transition:border-color .2s;
+  appearance:none;
+  -webkit-appearance:none;
+  cursor:pointer;
+}
+.field select:focus,.field input:focus{border-color:var(--accent)}
+.select-wrap{position:relative}
+.select-wrap::after{
+  content:"▾";
+  position:absolute;right:12px;top:50%;transform:translateY(-50%);
+  color:var(--muted2);pointer-events:none;font-size:12px;
+}
+.mes-ano{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn-primario{
+  width:100%;
+  background:var(--accent);color:#000;
+  border:none;border-radius:var(--r);
+  padding:12px;
+  font-size:15px;font-weight:800;font-family:var(--sans);
+  cursor:pointer;
+  transition:opacity .15s,transform .1s;
+  margin-top:6px;
+}
+.btn-primario:hover{opacity:.88}
+.btn-primario:active{transform:scale(.98)}
+.btn-primario:disabled{opacity:.4;cursor:not-allowed}
+
+/* ══════════════════════════════════════════
+   APP PRINCIPAL
+══════════════════════════════════════════ */
+#app{
+  display:none;
+  min-height:100vh;
+  padding-bottom:40px;
+}
+
+/* ── HEADER ── */
+.app-header{
+  background:var(--surface);
+  border-bottom:1px solid var(--border);
+  padding:12px 16px;
+  display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:100;
+}
+.header-logo{
+  font-family:var(--mono);font-size:12px;
+  letter-spacing:2px;color:var(--accent);font-weight:700;
+}
+.header-info{
+  display:flex;align-items:center;gap:10px;
+}
+.header-vendedor{
+  font-size:12px;color:var(--muted2);
+  font-family:var(--mono);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  max-width:160px;
+}
+.header-periodo{
+  background:var(--card2);
+  border:1px solid var(--border2);
+  border-radius:6px;
+  padding:3px 8px;
+  font-family:var(--mono);font-size:11px;
+  color:var(--accent);
+}
+.btn-icon{
+  background:none;border:1px solid var(--border2);
+  color:var(--muted2);border-radius:7px;
+  padding:6px 10px;cursor:pointer;font-size:13px;
+  transition:all .2s;
+}
+.btn-icon:hover{border-color:var(--accent);color:var(--accent)}
+
+/* ── PROGRESS BAR ── */
+.progress-wrap{
+  padding:10px 16px;
+  background:var(--surface);
+  border-bottom:1px solid var(--border);
+}
+.progress-label{
+  display:flex;justify-content:space-between;
+  font-family:var(--mono);font-size:11px;
+  color:var(--muted2);margin-bottom:6px;
+}
+.progress-bar{
+  height:4px;
+  background:var(--border2);
+  border-radius:4px;
+  overflow:hidden;
+}
+.progress-fill{
+  height:100%;
+  background:linear-gradient(90deg,var(--accent),var(--blue));
+  border-radius:4px;
+  transition:width .4s cubic-bezier(.4,0,.2,1);
+}
+
+/* ── CONTEÚDO ── */
+.app-body{
+  padding:16px;
+  max-width:680px;
+  margin:0 auto;
+  display:flex;flex-direction:column;
+  gap:14px;
+}
+
+/* ── SEÇÕES ── */
+.secao{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--r2);
+  overflow:hidden;
+}
+.secao-header{
+  padding:12px 16px 10px;
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:8px;
+}
+.secao-num{
+  width:22px;height:22px;
+  background:var(--card2);
+  border:1px solid var(--border2);
+  border-radius:6px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-size:11px;
+  color:var(--accent);font-weight:700;flex-shrink:0;
+}
+.secao-titulo{
+  font-size:13px;font-weight:700;
+  letter-spacing:.3px;
+  color:var(--text);
+}
+.secao-body{padding:14px 16px}
+
+/* ══════════════════════════════════════════
+   SEÇÃO 1 — CLIENTE ATUAL
+══════════════════════════════════════════ */
+.cliente-display{
+  background:var(--card);
+  border:1px solid var(--border2);
+  border-radius:var(--r);
+  padding:12px 14px;
+  margin-bottom:12px;
+}
+.cliente-label{
+  font-family:var(--mono);font-size:10px;
+  text-transform:uppercase;letter-spacing:1px;
+  color:var(--muted2);margin-bottom:4px;
+}
+.cliente-nome{
+  font-size:18px;font-weight:800;
+  color:var(--accent);
+  line-height:1.2;
+}
+.cliente-cod{
+  font-family:var(--mono);font-size:11px;
+  color:var(--muted2);margin-top:2px;
+}
+.cliente-status{
+  display:inline-flex;align-items:center;gap:5px;
+  margin-top:6px;
+  font-size:11px;font-family:var(--mono);
+  padding:3px 8px;
+  border-radius:20px;
+  border:1px solid;
+}
+.status-pendente{color:var(--warn);border-color:rgba(245,158,11,.3);background:rgba(245,158,11,.08)}
+.status-ok{color:var(--accent);border-color:rgba(0,229,160,.3);background:rgba(0,229,160,.08)}
+.status-sem-venda{color:var(--muted2);border-color:var(--border2);background:var(--card2)}
+
+.nav-clientes{
+  display:grid;
+  grid-template-columns:auto 1fr auto;
+  gap:8px;align-items:center;
+}
+.btn-nav{
+  background:var(--card);
+  border:1px solid var(--border2);
+  color:var(--text);
+  border-radius:var(--r);
+  padding:9px 14px;
+  font-size:16px;cursor:pointer;
+  transition:all .2s;
+}
+.btn-nav:hover{border-color:var(--accent);color:var(--accent)}
+.btn-nav:disabled{opacity:.3;cursor:not-allowed}
+.nav-sel{
+  background:var(--card);
+  border:1px solid var(--border2);
+  color:var(--text);
+  border-radius:var(--r);
+  padding:9px 12px;
+  font-size:13px;font-family:var(--sans);
+  outline:none;width:100%;cursor:pointer;
+  appearance:none;-webkit-appearance:none;
+  text-align:center;
+}
+.nav-sel:focus{border-color:var(--blue)}
+
+/* ══════════════════════════════════════════
+   SEÇÃO 2 — FORMULÁRIO DE PRODUTO
+══════════════════════════════════════════ */
+.form-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-bottom:10px;
+}
+@media(max-width:420px){
+  .form-grid{grid-template-columns:1fr}
+}
+.form-full{grid-column:1/-1}
+.form-label{
+  display:block;
+  font-family:var(--mono);font-size:10px;
+  text-transform:uppercase;letter-spacing:1px;
+  color:var(--muted2);margin-bottom:5px;
+}
+.form-input, .form-select{
+  width:100%;
+  background:var(--card);
+  border:1px solid var(--border2);
+  color:var(--text);
+  border-radius:var(--r);
+  padding:9px 11px;
+  font-size:14px;font-family:var(--sans);
+  outline:none;
+  transition:border-color .2s;
+  appearance:none;-webkit-appearance:none;
+}
+.form-input:focus,.form-select:focus{border-color:var(--blue)}
+.kg-preview{
+  display:flex;align-items:center;gap:8px;
+  background:var(--card2);
+  border:1px solid var(--border2);
+  border-radius:var(--r);
+  padding:9px 12px;
+  font-family:var(--mono);font-size:13px;
+}
+.kg-valor{color:var(--accent);font-weight:700;font-size:15px}
+.kg-unid{color:var(--muted2);font-size:11px}
+.form-obs{
+  width:100%;
+  background:var(--card);
+  border:1px solid var(--border2);
+  color:var(--text);
+  border-radius:var(--r);
+  padding:9px 11px;
+  font-size:13px;font-family:var(--sans);
+  outline:none;resize:vertical;min-height:56px;
+  transition:border-color .2s;
+}
+.form-obs:focus{border-color:var(--blue)}
+
+.form-acoes{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:8px;margin-top:10px;
+}
+.btn-add{
+  background:var(--blue);color:#fff;
+  border:none;border-radius:var(--r);
+  padding:11px 16px;
+  font-size:14px;font-weight:700;font-family:var(--sans);
+  cursor:pointer;transition:all .2s;
+}
+.btn-add:hover{background:#42a5f5}
+.btn-add:active{transform:scale(.98)}
+.btn-limpar{
+  background:var(--card);
+  border:1px solid var(--border2);
+  color:var(--muted2);
+  border-radius:var(--r);
+  padding:11px 14px;
+  cursor:pointer;font-size:13px;
+  transition:all .2s;white-space:nowrap;
+}
+.btn-limpar:hover{border-color:var(--danger);color:var(--danger)}
+
+/* ══════════════════════════════════════════
+   SEÇÃO 3 — LISTA / CARRINHO
+══════════════════════════════════════════ */
+.lista-vazia{
+  text-align:center;
+  padding:28px 16px;
+  color:var(--muted);
+}
+.lista-vazia .icon{font-size:32px;margin-bottom:8px;opacity:.5}
+.lista-vazia p{font-size:13px;font-family:var(--mono)}
+
+.item-card{
+  background:var(--card);
+  border:1px solid var(--border2);
+  border-radius:var(--r);
+  padding:11px 12px;
+  margin-bottom:8px;
+  transition:border-color .2s;
+  position:relative;
+}
+.item-card:last-child{margin-bottom:0}
+.item-card.editando{border-color:var(--blue)}
+.item-card-header{
+  display:flex;align-items:flex-start;justify-content:space-between;
+  gap:8px;margin-bottom:5px;
+}
+.item-nome{font-size:14px;font-weight:700;color:var(--text);line-height:1.3}
+.item-badge{
+  flex-shrink:0;
+  font-family:var(--mono);font-size:10px;
+  padding:2px 7px;border-radius:20px;
+  border:1px solid;
+  white-space:nowrap;
+}
+.badge-saco{color:#a78bfa;border-color:rgba(167,139,250,.3);background:rgba(167,139,250,.08)}
+.badge-granel{color:#34d399;border-color:rgba(52,211,153,.3);background:rgba(52,211,153,.08)}
+.badge-bag{color:#fb923c;border-color:rgba(251,146,60,.3);background:rgba(251,146,60,.08)}
+.item-meta{
+  display:flex;gap:12px;
+  font-family:var(--mono);font-size:11px;
+  color:var(--muted2);
+  flex-wrap:wrap;
+}
+.item-meta span strong{color:var(--text)}
+.item-kg{
+  font-family:var(--mono);font-size:13px;
+  color:var(--accent);font-weight:700;
+}
+.item-obs{
+  font-size:11px;color:var(--muted2);
+  margin-top:5px;font-style:italic;
+  border-top:1px solid var(--border);
+  padding-top:5px;
+}
+.item-acoes{
+  display:flex;gap:6px;margin-top:8px;
+}
+.btn-edit{
+  flex:1;
+  background:var(--card2);
+  border:1px solid var(--border2);
+  color:var(--muted2);
+  border-radius:7px;padding:6px 0;
+  cursor:pointer;font-size:12px;font-family:var(--sans);
+  transition:all .2s;
+}
+.btn-edit:hover{border-color:var(--blue);color:var(--blue)}
+.btn-del{
+  background:var(--card2);
+  border:1px solid var(--border2);
+  color:var(--muted2);
+  border-radius:7px;padding:6px 12px;
+  cursor:pointer;font-size:12px;
+  transition:all .2s;
+}
+.btn-del:hover{border-color:var(--danger);color:var(--danger)}
+
+.lista-total{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-top:10px;
+  padding:10px 12px;
+  background:var(--card2);
+  border:1px solid var(--border2);
+  border-radius:var(--r);
+}
+.total-label{
+  font-family:var(--mono);font-size:11px;
+  text-transform:uppercase;letter-spacing:1px;
+  color:var(--muted2);
+}
+.total-valor{
+  font-family:var(--mono);font-size:18px;
+  font-weight:700;color:var(--accent);
+}
+
+/* ══════════════════════════════════════════
+   SEÇÃO 4 — AÇÕES DO CLIENTE
+══════════════════════════════════════════ */
+.acoes-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+@media(max-width:340px){
+  .acoes-grid{grid-template-columns:1fr}
+}
+.btn-sem-venda{
+  background:var(--card);
+  border:1px solid var(--border2);
+  color:var(--muted2);
+  border-radius:var(--r);
+  padding:13px;
+  font-size:14px;font-weight:700;font-family:var(--sans);
+  cursor:pointer;transition:all .2s;
+  text-align:center;
+}
+.btn-sem-venda:hover{border-color:var(--warn);color:var(--warn)}
+.btn-finalizar{
+  background:linear-gradient(135deg,var(--accent),var(--accent-dim));
+  color:#000;border:none;
+  border-radius:var(--r);padding:13px;
+  font-size:14px;font-weight:800;font-family:var(--sans);
+  cursor:pointer;transition:all .2s;
+  text-align:center;
+}
+.btn-finalizar:hover{opacity:.88}
+.btn-finalizar:active{transform:scale(.98)}
+
+/* ══════════════════════════════════════════
+   RESUMO / PAINEL LATERAL RÁPIDO
+══════════════════════════════════════════ */
+.resumo-strip{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--r2);
+  padding:12px 16px;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:4px;
+}
+.resumo-item{text-align:center}
+.resumo-num{
+  font-family:var(--mono);font-size:18px;
+  font-weight:700;color:var(--accent);
+}
+.resumo-txt{
+  font-size:10px;font-family:var(--mono);
+  text-transform:uppercase;letter-spacing:.8px;
+  color:var(--muted2);
+}
+
+/* ══════════════════════════════════════════
+   MODAL CONFIRMAÇÃO
+══════════════════════════════════════════ */
+.modal-overlay{
+  position:fixed;inset:0;
+  background:rgba(10,13,18,.85);
+  display:flex;align-items:flex-end;justify-content:center;
+  z-index:300;
+  opacity:0;pointer-events:none;
+  transition:opacity .25s;
+}
+.modal-overlay.aberta{opacity:1;pointer-events:all}
+.modal-sheet{
+  background:var(--surface);
+  border:1px solid var(--border2);
+  border-radius:20px 20px 0 0;
+  padding:24px 20px 32px;
+  width:100%;max-width:480px;
+  transform:translateY(100%);
+  transition:transform .3s cubic-bezier(.4,0,.2,1);
+}
+.modal-overlay.aberta .modal-sheet{transform:translateY(0)}
+.modal-handle{
+  width:36px;height:4px;
+  background:var(--border2);
+  border-radius:4px;
+  margin:0 auto 20px;
+}
+.modal-sheet h3{font-size:18px;font-weight:800;margin-bottom:6px}
+.modal-sheet p{color:var(--muted2);font-size:13px;margin-bottom:20px;line-height:1.5}
+.modal-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn-cancel{
+  background:var(--card);
+  border:1px solid var(--border2);
+  color:var(--muted2);
+  border-radius:var(--r);padding:12px;
+  cursor:pointer;font-size:14px;font-family:var(--sans);
+  transition:all .2s;
+}
+.btn-confirm{
+  background:var(--accent);color:#000;
+  border:none;border-radius:var(--r);padding:12px;
+  font-size:14px;font-weight:700;font-family:var(--sans);
+  cursor:pointer;transition:all .2s;
+}
+.btn-confirm:hover{opacity:.88}
+
+/* ══════════════════════════════════════════
+   CHIP DE EDIÇÃO
+══════════════════════════════════════════ */
+.editing-chip{
+  display:inline-flex;align-items:center;gap:6px;
+  background:rgba(33,150,243,.12);
+  border:1px solid rgba(33,150,243,.3);
+  color:var(--blue);
+  border-radius:20px;
+  padding:4px 10px;
+  font-size:12px;font-family:var(--mono);
+  margin-bottom:8px;
+}
+.editing-chip button{
+  background:none;border:none;
+  color:var(--blue);cursor:pointer;font-size:13px;
+  padding:0;line-height:1;opacity:.7;
+}
+.editing-chip button:hover{opacity:1}
+
+/* ══════════════════════════════════════════
+   PILL TAG PRODUTO
+══════════════════════════════════════════ */
+.produto-tag{
+  display:inline-flex;gap:6px;align-items:center;
+  background:var(--card2);border:1px solid var(--border2);
+  border-radius:6px;padding:3px 8px;
+  font-family:var(--mono);font-size:10px;
+  color:var(--muted2);margin-bottom:8px;
+}
+
+/* ══════════════════════════════════════════
+   ANIMAÇÕES
+══════════════════════════════════════════ */
+@keyframes fadeIn{
+  from{opacity:0;transform:translateY(8px)}
+  to{opacity:1;transform:translateY(0)}
+}
+.item-card{animation:fadeIn .2s ease}
+
+/* ══════════════════════════════════════════
+   RESPONSIVO MAIOR
+══════════════════════════════════════════ */
+@media(min-width:600px){
+  .app-body{padding:20px 24px}
+  .acoes-grid{grid-template-columns:auto 1fr}
+  .btn-sem-venda{white-space:nowrap}
+}
 </style>
 </head>
 <body>
 
-<!-- LOADING -->
+<!-- ════════════════ LOADING ════════════════ -->
 <div id="loading">
   <div class="spinner"></div>
-  <p id="loadingMsg">Carregando...</p>
+  <p id="loadingMsg">Conectando à planilha...</p>
 </div>
 
-<!-- TOAST -->
+<!-- ════════════════ TOAST ════════════════ -->
 <div class="toast" id="toast"></div>
 
-
-
-<!-- APP PRINCIPAL (layout definitivo vai aqui) -->
-<div id="app">
-  <h1>✅ Conexão OK — PREVFISH</h1>
-  <p class="info">Dados carregados com sucesso. O layout será construído aqui.</p>
-  <div class="dados-json" id="dadosJson"></div>
+<!-- ════════════════ MODAL CONFIRMAÇÃO ════════════════ -->
+<div class="modal-overlay" id="modal">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <h3 id="modal-titulo">Confirmar ação</h3>
+    <p id="modal-desc">Tem certeza?</p>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="fecharModal()">Cancelar</button>
+      <button class="btn-confirm" id="modal-confirmar">Confirmar</button>
+    </div>
+  </div>
 </div>
 
+<!-- ════════════════ TELA DE LOGIN ════════════════ -->
+<div id="tela-login">
+  <div class="login-box">
+    <div class="login-logo">PREVFISH</div>
+    <h2>Previsão de Vendas</h2>
+    <p class="login-sub">Selecione o mês e ano para iniciar os lançamentos</p>
+
+    <div class="mes-ano">
+      <div class="field">
+        <label>Mês</label>
+        <div class="select-wrap">
+          <select id="sel-mes">
+            <option value="1">Janeiro</option><option value="2">Fevereiro</option>
+            <option value="3">Março</option><option value="4">Abril</option>
+            <option value="5">Maio</option><option value="6">Junho</option>
+            <option value="7">Julho</option><option value="8">Agosto</option>
+            <option value="9">Setembro</option><option value="10">Outubro</option>
+            <option value="11">Novembro</option><option value="12">Dezembro</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label>Ano</label>
+        <div class="select-wrap">
+          <select id="sel-ano">
+            <option value="2025">2025</option>
+            <option value="2026" selected>2026</option>
+            <option value="2027">2027</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn-primario" id="btn-entrar" onclick="entrar()" disabled>
+      Carregar →
+    </button>
+  </div>
+</div>
+
+<!-- ════════════════ APP PRINCIPAL ════════════════ -->
+<div id="app">
+
+  <!-- HEADER -->
+  <div class="app-header">
+    <div class="header-logo">PREVFISH</div>
+    <div class="header-info">
+      <span class="header-vendedor" id="hdr-vendedor">—</span>
+      <span class="header-periodo" id="hdr-periodo">—</span>
+      <button class="btn-icon" onclick="sair()" title="Sair">⏏</button>
+    </div>
+  </div>
+
+  <!-- BARRA DE PROGRESSO -->
+  <div class="progress-wrap">
+    <div class="progress-label">
+      <span>Clientes atendidos</span>
+      <span id="prog-txt">0 / 0</span>
+    </div>
+    <div class="progress-bar">
+      <div class="progress-fill" id="prog-fill" style="width:0%"></div>
+    </div>
+  </div>
+
+  <!-- CORPO -->
+  <div class="app-body">
+
+    <!-- RESUMO RÁPIDO -->
+    <div class="resumo-strip">
+      <div class="resumo-item">
+        <div class="resumo-num" id="res-atendidos">0</div>
+        <div class="resumo-txt">Atendidos</div>
+      </div>
+      <div class="resumo-item">
+        <div class="resumo-num" id="res-sem-venda">0</div>
+        <div class="resumo-txt">Sem venda</div>
+      </div>
+      <div class="resumo-item">
+        <div class="resumo-num" id="res-total-kg">0</div>
+        <div class="resumo-txt">Total kg</div>
+      </div>
+    </div>
+
+    <!-- ══ SEÇÃO 1 — CLIENTE ATUAL ══ -->
+    <div class="secao">
+      <div class="secao-header">
+        <div class="secao-num">1</div>
+        <div class="secao-titulo">Cliente atual</div>
+      </div>
+      <div class="secao-body">
+
+        <!-- Display do cliente -->
+        <div class="cliente-display">
+          <div class="cliente-label">Lançando para</div>
+          <div class="cliente-nome" id="disp-nome-cliente">—</div>
+          <div class="cliente-cod" id="disp-cod-cliente">—</div>
+          <div id="disp-status-cliente" class="cliente-status status-pendente">
+            ● Pendente
+          </div>
+        </div>
+
+        <!-- Navegação -->
+        <div class="nav-clientes">
+          <button class="btn-nav" id="btn-ant" onclick="irCliente(-1)" disabled>←</button>
+          <select class="nav-sel" id="sel-cliente" onchange="irClienteDireto(this.value)"></select>
+          <button class="btn-nav" id="btn-prox" onclick="irCliente(1)">→</button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ══ SEÇÃO 2 — FORMULÁRIO DE PRODUTO ══ -->
+    <div class="secao">
+      <div class="secao-header">
+        <div class="secao-num">2</div>
+        <div class="secao-titulo">Adicionar produto</div>
+      </div>
+      <div class="secao-body">
+
+        <!-- Chip de edição (visível ao editar) -->
+        <div class="editing-chip" id="chip-editar" style="display:none">
+          ✏️ Editando item <button onclick="cancelarEdicao()">✕</button>
+        </div>
+
+        <div class="form-grid">
+          <!-- Tipo (unidade) -->
+          <div>
+            <label class="form-label">Tipo / Unidade</label>
+            <div class="select-wrap">
+              <select class="form-select" id="f-tipo" onchange="calcularKg()">
+                <option value="Saco">Saco (25 kg)</option>
+                <option value="Granel">Granel (1 kg)</option>
+                <option value="Bag">Bag (750 kg)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Quantidade -->
+          <div>
+            <label class="form-label">Quantidade</label>
+            <input class="form-input" type="number" id="f-qtd"
+              placeholder="0" min="0" step="0.5"
+              oninput="calcularKg()"/>
+          </div>
+
+          <!-- Produto -->
+          <div class="form-full">
+            <label class="form-label">Produto</label>
+            <div class="select-wrap">
+              <select class="form-select" id="f-produto" onchange="atualizarProdutoSelecionado()">
+                <option value="">Selecione um produto...</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Preview KG -->
+          <div class="form-full">
+            <label class="form-label">Total em kg</label>
+            <div class="kg-preview">
+              <span class="kg-valor" id="kg-valor">0</span>
+              <span class="kg-unid">kg calculados</span>
+            </div>
+          </div>
+
+          <!-- Observação -->
+          <div class="form-full">
+            <label class="form-label">Observação (opcional)</label>
+            <textarea class="form-obs" id="f-obs" placeholder="Ex: entrega parcial, cliente solicitou..."></textarea>
+          </div>
+        </div>
+
+        <div class="form-acoes">
+          <button class="btn-add" id="btn-add-item" onclick="adicionarItem()">
+            + Adicionar item
+          </button>
+          <button class="btn-limpar" onclick="limparFormulario()">Limpar</button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ══ SEÇÃO 3 — LISTA / CARRINHO ══ -->
+    <div class="secao">
+      <div class="secao-header">
+        <div class="secao-num">3</div>
+        <div class="secao-titulo">Itens lançados</div>
+      </div>
+      <div class="secao-body" id="lista-wrap">
+
+        <!-- Vazia por padrão -->
+        <div class="lista-vazia" id="lista-vazia">
+          <div class="icon">📋</div>
+          <p>Nenhum item adicionado.</p>
+          <p style="margin-top:4px;font-size:11px">Use o formulário acima para adicionar produtos.</p>
+        </div>
+
+        <!-- Cards dos itens -->
+        <div id="lista-itens"></div>
+
+        <!-- Rodapé total -->
+        <div class="lista-total" id="lista-total" style="display:none">
+          <span class="total-label">Total do cliente</span>
+          <span class="total-valor" id="total-kg-display">0 kg</span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ══ SEÇÃO 4 — AÇÕES DO CLIENTE ══ -->
+    <div class="secao">
+      <div class="secao-header">
+        <div class="secao-num">4</div>
+        <div class="secao-titulo">Finalizar cliente</div>
+      </div>
+      <div class="secao-body">
+        <div class="acoes-grid">
+          <button class="btn-sem-venda" onclick="registrarSemVenda()">
+            🚫 Sem venda
+          </button>
+          <button class="btn-finalizar" onclick="confirmarFinalizar()">
+            ✅ Finalizar e salvar
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /app-body -->
+</div><!-- /app -->
+
 <script>
-// ────────────────────────────────────────────────
+// ════════════════════════════════════════════════
+// CONFIGURAÇÃO DA API
+// ════════════════════════════════════════════════
+const API_URL = "https://script.google.com/macros/s/AKfycbwcDbFRKkH65i10MnVrOpxWuyb1qm_GajWEZR-HcGJiQFtOkqgpClqLZPEF6hto2ygyVA/exec";
+
+// ════════════════════════════════════════════════
 // ESTADO GLOBAL
-// ────────────────────────────────────────────────
-const API_URL       = "https://script.google.com/macros/s/AKfycbwcDbFRKkH65i10MnVrOpxWuyb1qm_GajWEZR-HcGJiQFtOkqgpClqLZPEF6hto2ygyVA/exec";
-let todosClientes   = [];
-let todosProdutos   = [];
-let todosVendedores = [];
+// ════════════════════════════════════════════════
+let estado = {
+  vendedor:    null,   // { nome, codigo, nomeReduzido } — virá do sistema de login futuro
+  mes:         null,
+  ano:         null,
+  clientes:    [],     // lista filtrada pelo vendedor
+  clienteIdx:  0,      // índice do cliente atual
+  itensCliente:[],     // itens do cliente em memória
+  editandoId:  null,   // id do item sendo editado
+  sessao:      {},     // { [codCliente]: { status:'ok'|'sem-venda', itens:[], totalKg:0 } }
+  produtos:    [],     // todos os produtos
+};
 
-// ────────────────────────────────────────────────
-// JSONP
-// ────────────────────────────────────────────────
-let _cbCounter = 0;
+// Conversão de unidades
+const KG_POR_UNIDADE = { Saco: 25, Granel: 1, Bag: 750 };
+
+// Nomes dos meses
+const MESES = ["","Janeiro","Fevereiro","Março","Abril","Maio","Junho",
+               "Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
+
+// ════════════════════════════════════════════════
+// JSONP — comunicação com Google Apps Script
+// ════════════════════════════════════════════════
+let _cbCount = 0;
 function jsonp(url) {
-  return new Promise((resolve, reject) => {
-    const cbName  = "__prevfish_cb_" + (++_cbCounter);
-    const timeout = setTimeout(() => {
-      delete window[cbName];
-      document.getElementById(cbName + "_script")?.remove();
-      reject(new Error("Timeout na requisição"));
-    }, 15000);
+  return new Promise((res, rej) => {
+    const cb = "__pf_" + (++_cbCount);
+    const timer = setTimeout(() => {
+      delete window[cb];
+      document.getElementById(cb+"_s")?.remove();
+      rej(new Error("Timeout na requisição"));
+    }, 18000);
 
-    window[cbName] = (data) => {
-      clearTimeout(timeout);
-      delete window[cbName];
-      document.getElementById(cbName + "_script")?.remove();
-      if (data.error) reject(new Error(data.error));
-      else resolve(data);
+    window[cb] = (data) => {
+      clearTimeout(timer);
+      delete window[cb];
+      document.getElementById(cb+"_s")?.remove();
+      if (data.error) rej(new Error(data.error));
+      else res(data);
     };
 
-    const sep    = url.includes("?") ? "&" : "?";
-    const script = document.createElement("script");
-    script.id    = cbName + "_script";
-    script.src   = url + sep + "callback=" + cbName;
-    script.onerror = () => {
-      clearTimeout(timeout);
-      delete window[cbName];
-      script.remove();
-      reject(new Error("Falha ao carregar script. Verifique a URL."));
+    const sep = url.includes("?") ? "&" : "?";
+    const sc  = document.createElement("script");
+    sc.id     = cb + "_s";
+    sc.src    = url + sep + "callback=" + cb;
+    sc.onerror = () => {
+      clearTimeout(timer);
+      delete window[cb]; sc.remove();
+      rej(new Error("Falha ao carregar. Verifique a conexão."));
     };
-    document.head.appendChild(script);
+    document.head.appendChild(sc);
   });
 }
 
-// ────────────────────────────────────────────────
-// INIT
-// ────────────────────────────────────────────────
+// ════════════════════════════════════════════════
+// INICIALIZAÇÃO — carrega dados ao abrir
+// ════════════════════════════════════════════════
 window.onload = async () => {
-  await carregarDados();
-};
+  // Define o mês atual no select
+  const agora = new Date();
+  document.getElementById("sel-mes").value = agora.getMonth() + 1;
 
-// ────────────────────────────────────────────────
-// CARREGAR DADOS
-// ────────────────────────────────────────────────
-async function carregarDados() {
   mostrarLoading("Conectando à planilha...");
   try {
     const data = await jsonp(`${API_URL}?action=getData`);
-    todosVendedores = data.vendedores || [];
-    todosClientes   = data.clientes   || [];
-    todosProdutos   = data.produtos   || [];
+    // Guarda produtos e clientes; vendedor virá do sistema de login futuro
+    estado.produtos      = data.produtos  || [];
+    estado._todosClientes= data.clientes  || [];
+    // Extrai lista de vendedores para uso interno (filtro de clientes)
+    estado._todosVendedores = data.vendedores || [];
 
-    // Exibe resumo no placeholder
-    document.getElementById("dadosJson").textContent =
-      `Vendedores: ${todosVendedores.length}\n`+
-      `Clientes:   ${todosClientes.length}\n`+
-      `Produtos:   ${todosProdutos.length}\n\n`+
-      JSON.stringify({ vendedores: todosVendedores.slice(0,2), clientes: todosClientes.slice(0,2), produtos: todosProdutos.slice(0,2) }, null, 2);
+    esconderLoading();
+    document.getElementById("btn-entrar").disabled = false;
+  } catch(e) {
+    esconderLoading();
+    toast("❌ Erro ao conectar: " + e.message, "error");
+  }
+};
 
-    document.getElementById("app").style.display = "block";
+// ════════════════════════════════════════════════
+// ENTRAR — configura período e abre o app
+// ════════════════════════════════════════════════
+async function entrar() {
+  const mes = document.getElementById("sel-mes").value;
+  const ano = document.getElementById("sel-ano").value;
+
+  // ── PONTO DE INTEGRAÇÃO FUTURA ──────────────────────────────
+  // Quando o sistema de login estiver pronto, substitua a linha
+  // abaixo pelo código de autenticação que retorna o vendedor
+  // logado. Por enquanto, estado.vendedor é null e o filtro de
+  // clientes usará todos (sem filtro por vendedor).
+  // Exemplo futuro:
+  //   estado.vendedor = await obterVendedorLogado();
+  // ────────────────────────────────────────────────────────────
+  const codV = estado.vendedor ? estado.vendedor.codigo : null;
+
+  estado.mes = mes;
+  estado.ano = ano;
+
+  // Filtra clientes do vendedor (ou todos, se ainda sem login)
+  estado.clientes = (estado._todosClientes || []).filter(c =>
+    !codV || String(c.codVendedor) === String(codV)
+  );
+
+  if (estado.clientes.length === 0) {
+    toast("Nenhum cliente encontrado.", "warn"); return;
+  }
+
+  // Inicia sessão vazia para cada cliente
+  estado.sessao = {};
+  estado.clientes.forEach(c => {
+    estado.sessao[c.codCliente] = { status: "pendente", itens: [], totalKg: 0 };
+  });
+
+  // Popula produtos no formulário
+  preencherSelectProdutos();
+
+  // Popula select de clientes na navegação
+  preencherSelectClientes();
+
+  // Tenta carregar lançamentos existentes do servidor
+  mostrarLoading("Carregando lançamentos anteriores...");
+  try {
+    const r = await jsonp(`${API_URL}?action=getLancamentos&mes=${mes}&ano=${ano}&codVendedor=${encodeURIComponent(codV||"")}`);
+    if (r.lancamentos && r.lancamentos.length) {
+      r.lancamentos.forEach(l => {
+        const cod = String(l.COD_CLIENTE);
+        if (!estado.sessao[cod]) return;
+        estado.sessao[cod].status = "ok";
+        const qtd   = parseFloat(l.QUANTIDADE) || 0;
+        const tipo  = unidadeParaTipo(l.UNIDADE);
+        const pesoU = KG_POR_UNIDADE[tipo] || 1;
+        estado.sessao[cod].itens.push({
+          id:         gerarId(),
+          codProduto: String(l.COD_PRODUTO),
+          nomeProduto:l.PRODUTO,
+          tipo,
+          quantidade: qtd,
+          pesoLiquido:pesoU,
+          totalKg:    qtd * pesoU,
+          observacao: l.OBSERVACAO || "",
+        });
+        estado.sessao[cod].totalKg = estado.sessao[cod].itens.reduce((s,i)=>s+i.totalKg,0);
+      });
+    }
+  } catch(e) {
+    toast("⚠️ Não foi possível carregar lançamentos anteriores.", "warn");
+  }
+
+  // Exibe o app
+  estado.clienteIdx = 0;
+  atualizarClienteAtual();
+  atualizarHeader();
+  atualizarResumo();
+
+  document.getElementById("tela-login").style.display = "none";
+  document.getElementById("app").style.display        = "block";
+  esconderLoading();
+}
+
+// ──────────────────────────────────────────────
+// Converte UNIDADE da planilha → tipo local
+// ──────────────────────────────────────────────
+function unidadeParaTipo(unidade) {
+  if (!unidade) return "Saco";
+  const u = String(unidade).toLowerCase();
+  if (u.includes("bag"))    return "Bag";
+  if (u.includes("granel")) return "Granel";
+  return "Saco";
+}
+
+// ════════════════════════════════════════════════
+// PREENCHE SELECT DE PRODUTOS
+// ════════════════════════════════════════════════
+function preencherSelectProdutos() {
+  const sel = document.getElementById("f-produto");
+  sel.innerHTML = '<option value="">Selecione um produto...</option>';
+  estado.produtos.forEach(p => {
+    const cod  = String(p.COD_PRODUTO || p.cod_produto || p.codigo || "");
+    const nome = String(p.PRODUTO     || p.produto     || p.nome   || "");
+    if (!cod && !nome) return;
+    const op       = document.createElement("option");
+    op.value       = cod;
+    op.dataset.nome = nome;
+    op.textContent = nome || cod;
+    // Guarda outros campos relevantes
+    op.dataset.fase    = p.FASE    || p.fase    || "";
+    op.dataset.subGrupo= p.SUB_GRUPO||p.sub_grupo||"";
+    op.dataset.pellet  = p.PELLET  || p.pellet  || "";
+    sel.appendChild(op);
+  });
+}
+
+// ════════════════════════════════════════════════
+// PREENCHE SELECT DE CLIENTES (navegação)
+// ════════════════════════════════════════════════
+function preencherSelectClientes() {
+  const sel = document.getElementById("sel-cliente");
+  sel.innerHTML = "";
+  estado.clientes.forEach((c, i) => {
+    const op       = document.createElement("option");
+    op.value       = i;
+    op.textContent = `${String(i+1).padStart(2,"0")}. ${c.nomeCliente}`;
+    sel.appendChild(op);
+  });
+}
+
+// ════════════════════════════════════════════════
+// NAVEGAÇÃO ENTRE CLIENTES
+// ════════════════════════════════════════════════
+function irCliente(delta) {
+  const novo = estado.clienteIdx + delta;
+  if (novo < 0 || novo >= estado.clientes.length) return;
+  estado.clienteIdx = novo;
+  atualizarClienteAtual();
+}
+
+function irClienteDireto(idx) {
+  estado.clienteIdx = parseInt(idx);
+  atualizarClienteAtual();
+}
+
+// ──────────────────────────────────────────────
+// Atualiza a UI para o cliente atual
+// ──────────────────────────────────────────────
+function atualizarClienteAtual() {
+  const idx = estado.clienteIdx;
+  const c   = estado.clientes[idx];
+  if (!c) return;
+
+  // Carrega itens deste cliente
+  const sess = estado.sessao[c.codCliente] || { status:"pendente", itens:[], totalKg:0 };
+  estado.itensCliente = [...sess.itens];
+  estado.editandoId   = null;
+
+  // Display
+  document.getElementById("disp-nome-cliente").textContent = c.nomeCliente;
+  document.getElementById("disp-cod-cliente").textContent  = `Cód: ${c.codCliente}  |  Loja: ${c.loja || "—"}`;
+
+  const statusEl = document.getElementById("disp-status-cliente");
+  if (sess.status === "ok") {
+    statusEl.className  = "cliente-status status-ok";
+    statusEl.textContent= "✓ Lançado";
+  } else if (sess.status === "sem-venda") {
+    statusEl.className  = "cliente-status status-sem-venda";
+    statusEl.textContent= "— Sem venda";
+  } else {
+    statusEl.className  = "cliente-status status-pendente";
+    statusEl.textContent= "● Pendente";
+  }
+
+  // Select de navegação
+  document.getElementById("sel-cliente").value  = idx;
+  document.getElementById("btn-ant").disabled   = idx === 0;
+  document.getElementById("btn-prox").disabled  = idx === estado.clientes.length - 1;
+
+  // Progresso
+  atualizarProgresso();
+
+  // Limpa formulário e renderiza lista
+  limparFormulario();
+  renderizarLista();
+}
+
+// ════════════════════════════════════════════════
+// CÁLCULO DE KG
+// ════════════════════════════════════════════════
+function calcularKg() {
+  const tipo = document.getElementById("f-tipo").value;
+  const qtd  = parseFloat(document.getElementById("f-qtd").value) || 0;
+  const kg   = qtd * (KG_POR_UNIDADE[tipo] || 1);
+  document.getElementById("kg-valor").textContent = kg % 1 === 0 ? kg : kg.toFixed(2);
+}
+
+function atualizarProdutoSelecionado() {
+  // Pode exibir info extra do produto se necessário
+}
+
+// ════════════════════════════════════════════════
+// ADICIONAR / EDITAR ITEM
+// ════════════════════════════════════════════════
+function adicionarItem() {
+  const selProd = document.getElementById("f-produto");
+  const tipo    = document.getElementById("f-tipo").value;
+  const qtd     = parseFloat(document.getElementById("f-qtd").value) || 0;
+  const obs     = document.getElementById("f-obs").value.trim();
+
+  if (!selProd.value) { toast("Selecione um produto.", "warn"); return; }
+  if (qtd <= 0)       { toast("Informe uma quantidade válida.", "warn"); return; }
+
+  const op        = selProd.options[selProd.selectedIndex];
+  const pesoU     = KG_POR_UNIDADE[tipo] || 1;
+  const totalKg   = qtd * pesoU;
+
+  const item = {
+    id:          estado.editandoId || gerarId(),
+    codProduto:  selProd.value,
+    nomeProduto: op.dataset.nome || op.textContent,
+    tipo,
+    quantidade:  qtd,
+    pesoLiquido: pesoU,
+    totalKg,
+    observacao:  obs,
+    fase:        op.dataset.fase    || "",
+    subGrupo:    op.dataset.subGrupo|| "",
+    pellet:      op.dataset.pellet  || "",
+  };
+
+  if (estado.editandoId) {
+    // Substitui o item existente
+    const idx = estado.itensCliente.findIndex(i => i.id === estado.editandoId);
+    if (idx !== -1) estado.itensCliente[idx] = item;
+    estado.editandoId = null;
+    document.getElementById("chip-editar").style.display = "none";
+    document.getElementById("btn-add-item").textContent  = "+ Adicionar item";
+  } else {
+    estado.itensCliente.push(item);
+  }
+
+  limparFormulario();
+  renderizarLista();
+  toast("✓ Item adicionado.");
+}
+
+// ════════════════════════════════════════════════
+// RENDERIZAÇÃO DA LISTA
+// ════════════════════════════════════════════════
+function renderizarLista() {
+  const vazioEl = document.getElementById("lista-vazia");
+  const listEl  = document.getElementById("lista-itens");
+  const totalEl = document.getElementById("lista-total");
+
+  listEl.innerHTML = "";
+
+  if (estado.itensCliente.length === 0) {
+    vazioEl.style.display = "block";
+    totalEl.style.display = "none";
+    return;
+  }
+
+  vazioEl.style.display = "none";
+  totalEl.style.display = "flex";
+
+  let totalKg = 0;
+  estado.itensCliente.forEach(item => {
+    totalKg += item.totalKg;
+
+    const badgeClass = { Saco:"badge-saco", Granel:"badge-granel", Bag:"badge-bag" }[item.tipo] || "";
+    const card = document.createElement("div");
+    card.className = "item-card" + (estado.editandoId === item.id ? " editando" : "");
+    card.innerHTML = `
+      <div class="item-card-header">
+        <div class="item-nome">${item.nomeProduto}</div>
+        <span class="item-badge ${badgeClass}">${item.tipo}</span>
+      </div>
+      <div class="item-meta">
+        <span>Qtd: <strong>${item.quantidade % 1 === 0 ? item.quantidade : item.quantidade.toFixed(2)}</strong></span>
+        <span>Peso unit: <strong>${item.pesoLiquido} kg</strong></span>
+        <span class="item-kg">⟹ ${item.totalKg % 1 === 0 ? item.totalKg : item.totalKg.toFixed(2)} kg</span>
+      </div>
+      ${item.observacao ? `<div class="item-obs">💬 ${item.observacao}</div>` : ""}
+      <div class="item-acoes">
+        <button class="btn-edit" onclick="editarItem('${item.id}')">✏️ Editar</button>
+        <button class="btn-del"  onclick="excluirItem('${item.id}')">🗑</button>
+      </div>
+    `;
+    listEl.appendChild(card);
+  });
+
+  document.getElementById("total-kg-display").textContent =
+    (totalKg % 1 === 0 ? totalKg : totalKg.toFixed(2)) + " kg";
+}
+
+// ════════════════════════════════════════════════
+// EDITAR ITEM
+// ════════════════════════════════════════════════
+function editarItem(id) {
+  const item = estado.itensCliente.find(i => i.id === id);
+  if (!item) return;
+
+  estado.editandoId = id;
+
+  // Preenche o formulário com os dados do item
+  document.getElementById("f-produto").value = item.codProduto;
+  document.getElementById("f-tipo").value    = item.tipo;
+  document.getElementById("f-qtd").value     = item.quantidade;
+  document.getElementById("f-obs").value     = item.observacao || "";
+  calcularKg();
+
+  // Exibe chip de edição
+  document.getElementById("chip-editar").style.display = "inline-flex";
+  document.getElementById("btn-add-item").textContent  = "✓ Salvar alteração";
+
+  // Scroll até o formulário
+  document.querySelector(".secao:nth-child(3)").scrollIntoView({ behavior:"smooth", block:"start" });
+  renderizarLista();
+}
+
+// ════════════════════════════════════════════════
+// CANCELAR EDIÇÃO
+// ════════════════════════════════════════════════
+function cancelarEdicao() {
+  estado.editandoId = null;
+  document.getElementById("chip-editar").style.display = "none";
+  document.getElementById("btn-add-item").textContent  = "+ Adicionar item";
+  limparFormulario();
+  renderizarLista();
+}
+
+// ════════════════════════════════════════════════
+// EXCLUIR ITEM
+// ════════════════════════════════════════════════
+function excluirItem(id) {
+  estado.itensCliente = estado.itensCliente.filter(i => i.id !== id);
+  if (estado.editandoId === id) cancelarEdicao();
+  renderizarLista();
+  toast("Item removido.");
+}
+
+// ════════════════════════════════════════════════
+// LIMPAR FORMULÁRIO
+// ════════════════════════════════════════════════
+function limparFormulario() {
+  document.getElementById("f-produto").value = "";
+  document.getElementById("f-tipo").value    = "Saco";
+  document.getElementById("f-qtd").value     = "";
+  document.getElementById("f-obs").value     = "";
+  document.getElementById("kg-valor").textContent = "0";
+}
+
+// ════════════════════════════════════════════════
+// REGISTRAR SEM VENDA
+// ════════════════════════════════════════════════
+function registrarSemVenda() {
+  const c = estado.clientes[estado.clienteIdx];
+  if (!c) return;
+
+  abrirModal(
+    "Registrar sem venda?",
+    `Confirmar que <strong>${c.nomeCliente}</strong> não realizou compras neste mês?`,
+    () => {
+      // Salva status no servidor
+      salvarNoServidor(c.codCliente, c.nomeCliente, [], true);
+    }
+  );
+}
+
+// ════════════════════════════════════════════════
+// CONFIRMAR FINALIZAR CLIENTE (com itens)
+// ════════════════════════════════════════════════
+function confirmarFinalizar() {
+  const c = estado.clientes[estado.clienteIdx];
+  if (!c) return;
+
+  if (estado.itensCliente.length === 0) {
+    toast("Nenhum item lançado. Use 'Sem venda' para registrar sem compras.", "warn"); return;
+  }
+
+  const totalKg = estado.itensCliente.reduce((s,i)=>s+i.totalKg, 0);
+  abrirModal(
+    "Finalizar cliente?",
+    `Salvar ${estado.itensCliente.length} item(s) para <strong>${c.nomeCliente}</strong>, totalizando ${totalKg.toFixed(2)} kg?`,
+    () => salvarNoServidor(c.codCliente, c.nomeCliente, estado.itensCliente, false)
+  );
+}
+
+// ════════════════════════════════════════════════
+// SALVAR NO SERVIDOR (Google Sheets)
+// ════════════════════════════════════════════════
+async function salvarNoServidor(codCliente, nomeCliente, itens, semVenda) {
+  const v = estado.vendedor;
+  mostrarLoading("Salvando no servidor...");
+
+  try {
+    // Monta o array de linhas no formato esperado pelo Apps Script
+    const linhas = semVenda ? [] : itens.map(i => ({
+      codCliente,
+      nomeCliente,
+      codProduto:  i.codProduto,
+      nomeProduto: i.nomeProduto,
+      unidade:     i.tipo,
+      quantidade:  i.quantidade,
+      pesoLiquido: i.pesoLiquido,
+      fase:        i.fase    || "",
+      subGrupo:    i.subGrupo|| "",
+      pellet:      i.pellet  || "",
+      observacao:  i.observacao || "",
+    }));
+
+    const url = `${API_URL}?action=salvarLancamentos`
+      + `&codVendedor=${encodeURIComponent(v.codigo)}`
+      + `&nomeVendedor=${encodeURIComponent(v.nome)}`
+      + `&mes=${estado.mes}&ano=${estado.ano}`
+      + `&linhas=${encodeURIComponent(JSON.stringify(linhas))}`;
+
+    await jsonp(url);
+
+    // Atualiza estado local
+    const statusFinal = semVenda ? "sem-venda" : "ok";
+    const totalKg     = itens.reduce((s,i)=>s+i.totalKg,0);
+    estado.sessao[codCliente] = {
+      status: statusFinal, itens: [...itens], totalKg
+    };
+    estado.itensCliente = [];
+
     esconderLoading();
-    return true;
-  } catch (e) {
+    toast(semVenda ? "🚫 Sem venda registrado." : "✅ Cliente finalizado com sucesso!");
+    atualizarResumo();
+
+    // Avança para o próximo cliente automaticamente
+    setTimeout(() => {
+      if (estado.clienteIdx < estado.clientes.length - 1) {
+        irCliente(1);
+      } else {
+        atualizarClienteAtual();
+        toast("🎉 Todos os clientes foram atendidos!");
+      }
+    }, 800);
+
+  } catch(e) {
     esconderLoading();
-    toast("❌ " + e.message, true);
-    return false;
+    toast("❌ Erro ao salvar: " + e.message, "error");
   }
 }
 
-// ────────────────────────────────────────────────
-// getLancamentos
-// ────────────────────────────────────────────────
-async function getLancamentos(mes, ano, codVendedor) {
-  return jsonp(`${API_URL}?action=getLancamentos&mes=${mes}&ano=${ano}&codVendedor=${encodeURIComponent(codVendedor||"")}`);
+// ════════════════════════════════════════════════
+// ATUALIZAR PROGRESSO E RESUMO
+// ════════════════════════════════════════════════
+function atualizarProgresso() {
+  const total     = estado.clientes.length;
+  const atendidos = Object.values(estado.sessao).filter(s => s.status !== "pendente").length;
+  const pct       = total > 0 ? Math.round(atendidos / total * 100) : 0;
+
+  document.getElementById("prog-fill").style.width = pct + "%";
+  document.getElementById("prog-txt").textContent  = `${atendidos} / ${total}`;
 }
 
-// ────────────────────────────────────────────────
-// salvarLancamentos
-// ────────────────────────────────────────────────
-async function salvarLancamentos(codVendedor, nomeVendedor, mes, ano, linhas) {
-  const url = `${API_URL}?action=salvarLancamentos`
-    + `&codVendedor=${encodeURIComponent(codVendedor)}`
-    + `&nomeVendedor=${encodeURIComponent(nomeVendedor)}`
-    + `&mes=${mes}&ano=${ano}`
-    + `&linhas=${encodeURIComponent(JSON.stringify(linhas))}`;
-  return jsonp(url);
+function atualizarResumo() {
+  const sessoes  = Object.values(estado.sessao);
+  const ok       = sessoes.filter(s => s.status === "ok").length;
+  const semVenda = sessoes.filter(s => s.status === "sem-venda").length;
+  const totalKg  = sessoes.reduce((s,c) => s + (c.totalKg||0), 0);
+
+  document.getElementById("res-atendidos").textContent  = ok;
+  document.getElementById("res-sem-venda").textContent  = semVenda;
+  document.getElementById("res-total-kg").textContent   =
+    totalKg >= 1000
+      ? (totalKg/1000).toFixed(1) + "t"
+      : Math.round(totalKg) + "";
+
+  atualizarProgresso();
 }
 
-// ────────────────────────────────────────────────
-// UI HELPERS
-// ────────────────────────────────────────────────
+// ════════════════════════════════════════════════
+// ATUALIZAR HEADER
+// ════════════════════════════════════════════════
+function atualizarHeader() {
+  const v = estado.vendedor;
+  document.getElementById("hdr-vendedor").textContent =
+    v ? (v.nomeReduzido || v.nome) : "—";
+  document.getElementById("hdr-periodo").textContent  =
+    `${MESES[+estado.mes] || estado.mes}/${estado.ano}`;
+}
+
+// ════════════════════════════════════════════════
+// SAIR
+// ════════════════════════════════════════════════
+function sair() {
+  abrirModal(
+    "Sair?",
+    "Dados não salvos serão perdidos. Tem certeza que deseja sair?",
+    () => {
+      document.getElementById("app").style.display       = "none";
+      document.getElementById("tela-login").style.display = "flex";
+      estado = { ...estado, vendedor:null, sessao:{}, itensCliente:[], clienteIdx:0 };
+    }
+  );
+}
+
+// ════════════════════════════════════════════════
+// MODAL GENÉRICO
+// ════════════════════════════════════════════════
+function abrirModal(titulo, desc, onConfirm) {
+  document.getElementById("modal-titulo").innerHTML   = titulo;
+  document.getElementById("modal-desc").innerHTML     = desc;
+  document.getElementById("modal-confirmar").onclick  = () => {
+    fecharModal();
+    onConfirm();
+  };
+  document.getElementById("modal").classList.add("aberta");
+}
+function fecharModal() {
+  document.getElementById("modal").classList.remove("aberta");
+}
+// Fecha o modal ao clicar fora
+document.getElementById("modal").addEventListener("click", e => {
+  if (e.target === document.getElementById("modal")) fecharModal();
+});
+
+// ════════════════════════════════════════════════
+// UTILITÁRIOS
+// ════════════════════════════════════════════════
+function gerarId() {
+  return Date.now().toString(36) + Math.random().toString(36).slice(2,5);
+}
+
+let _tt;
+function toast(msg, tipo) {
+  const el = document.getElementById("toast");
+  el.textContent = msg;
+  el.className   = "toast show" + (tipo ? " "+tipo : "");
+  clearTimeout(_tt);
+  _tt = setTimeout(() => { el.className = "toast"; }, 4200);
+}
+
 function mostrarLoading(msg) {
   document.getElementById("loadingMsg").textContent = msg || "Aguarde...";
   document.getElementById("loading").style.display  = "flex";
 }
 function esconderLoading() {
   document.getElementById("loading").style.display = "none";
-}
-let _tt;
-function toast(msg, err) {
-  const el = document.getElementById("toast");
-  el.textContent = msg;
-  el.className   = "toast show" + (err ? " error" : "");
-  clearTimeout(_tt);
-  _tt = setTimeout(() => { el.className = "toast"; }, 4500);
 }
 </script>
 </body>
