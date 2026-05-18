@@ -84,87 +84,9 @@ body{
 .toast.warn{border-left-color:var(--warn)}
 
 /* ══════════════════════════════════════════
-   TELA DE LOGIN / SELEÇÃO DE VENDEDOR
-══════════════════════════════════════════ */
-#tela-login{
-  position:fixed;inset:0;
-  background:var(--bg);
-  display:flex;align-items:center;justify-content:center;
-  z-index:500;
-  padding:20px;
-}
-.login-box{
-  background:var(--surface);
-  border:1px solid var(--border2);
-  border-radius:var(--r2);
-  padding:32px 28px;
-  width:100%;max-width:440px;
-  box-shadow:var(--shadow);
-}
-.login-logo{
-  font-family:var(--mono);
-  font-size:11px;letter-spacing:3px;
-  color:var(--accent);
-  text-transform:uppercase;
-  margin-bottom:6px;
-}
-.login-box h2{
-  font-size:26px;font-weight:800;
-  color:var(--text);
-  margin-bottom:4px;
-}
-.login-sub{
-  color:var(--muted2);font-size:13px;
-  margin-bottom:24px;
-}
-.field{margin-bottom:14px}
-.field label{
-  display:block;font-family:var(--mono);
-  font-size:10px;letter-spacing:1px;
-  text-transform:uppercase;color:var(--muted2);
-  margin-bottom:6px;
-}
-.field select, .field input{
-  width:100%;
-  background:var(--card);
-  border:1px solid var(--border2);
-  color:var(--text);
-  border-radius:var(--r);
-  padding:10px 12px;
-  font-size:14px;font-family:var(--sans);
-  outline:none;
-  transition:border-color .2s;
-  appearance:none;
-  -webkit-appearance:none;
-  cursor:pointer;
-}
-.field select:focus,.field input:focus{border-color:var(--accent)}
-.select-wrap{position:relative}
-.select-wrap::after{
-  content:"▾";
-  position:absolute;right:12px;top:50%;transform:translateY(-50%);
-  color:var(--muted2);pointer-events:none;font-size:12px;
-}
-.mes-ano{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.btn-primario{
-  width:100%;
-  background:var(--accent);color:#000;
-  border:none;border-radius:var(--r);
-  padding:12px;
-  font-size:15px;font-weight:800;font-family:var(--sans);
-  cursor:pointer;
-  transition:opacity .15s,transform .1s;
-  margin-top:6px;
-}
-.btn-primario:hover{opacity:.88}
-.btn-primario:active{transform:scale(.98)}
-.btn-primario:disabled{opacity:.4;cursor:not-allowed}
-
-/* ══════════════════════════════════════════
    APP PRINCIPAL
 ══════════════════════════════════════════ */
 #app{
-  display:none;
   min-height:100vh;
   padding-bottom:40px;
 }
@@ -173,22 +95,27 @@ body{
 .app-header{
   background:var(--surface);
   border-bottom:1px solid var(--border);
-  padding:12px 16px;
-  display:flex;align-items:center;justify-content:space-between;
   position:sticky;top:0;z-index:100;
+}
+.header-top{
+  padding:10px 16px;
+  display:flex;align-items:center;justify-content:space-between;
+  gap:8px;
 }
 .header-logo{
   font-family:var(--mono);font-size:12px;
   letter-spacing:2px;color:var(--accent);font-weight:700;
+  flex-shrink:0;
 }
 .header-info{
-  display:flex;align-items:center;gap:10px;
+  display:flex;align-items:center;gap:8px;
+  min-width:0;
 }
 .header-vendedor{
-  font-size:12px;color:var(--muted2);
+  font-size:11px;color:var(--muted2);
   font-family:var(--mono);
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-  max-width:160px;
+  max-width:130px;
 }
 .header-periodo{
   background:var(--card2);
@@ -197,28 +124,59 @@ body{
   padding:3px 8px;
   font-family:var(--mono);font-size:11px;
   color:var(--accent);
+  white-space:nowrap;
 }
 .btn-icon{
   background:none;border:1px solid var(--border2);
   color:var(--muted2);border-radius:7px;
   padding:6px 10px;cursor:pointer;font-size:13px;
-  transition:all .2s;
+  transition:all .2s;flex-shrink:0;
 }
 .btn-icon:hover{border-color:var(--accent);color:var(--accent)}
 
-/* ── PROGRESS BAR ── */
-.progress-wrap{
-  padding:10px 16px;
-  background:var(--surface);
-  border-bottom:1px solid var(--border);
+/* ── HEADER STATS BAR ── */
+.header-stats{
+  border-top:1px solid var(--border);
+  padding:8px 16px;
+  display:flex;align-items:center;gap:0;
+  overflow-x:auto;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
 }
-.progress-label{
+.header-stats::-webkit-scrollbar{display:none}
+.hstat{
+  display:flex;flex-direction:column;align-items:center;
+  padding:0 12px;
+  border-right:1px solid var(--border);
+  flex-shrink:0;
+}
+.hstat:first-child{padding-left:0}
+.hstat:last-child{border-right:none}
+.hstat-val{
+  font-family:var(--mono);font-size:14px;font-weight:700;
+  color:var(--accent);line-height:1.2;
+}
+.hstat-val.warn{color:var(--warn)}
+.hstat-val.muted{color:var(--muted2)}
+.hstat-lbl{
+  font-family:var(--mono);font-size:9px;
+  text-transform:uppercase;letter-spacing:.8px;
+  color:var(--muted2);white-space:nowrap;
+}
+
+/* ── PROGRESS BAR (dentro do header-stats) ── */
+.hstat-prog{
+  flex:1;min-width:120px;
+  padding:0 12px;
+}
+.hstat-prog-label{
   display:flex;justify-content:space-between;
-  font-family:var(--mono);font-size:11px;
-  color:var(--muted2);margin-bottom:6px;
+  font-family:var(--mono);font-size:9px;
+  color:var(--muted2);margin-bottom:4px;
+  text-transform:uppercase;letter-spacing:.8px;
 }
 .progress-bar{
-  height:4px;
+  height:3px;
   background:var(--border2);
   border-radius:4px;
   overflow:hidden;
@@ -347,6 +305,7 @@ body{
   transform:translateX(100%);
   transition:transform .3s cubic-bezier(.4,0,.2,1);
   overflow-y:auto;
+  -webkit-overflow-scrolling:touch;
   padding:20px 14px;
 }
 .drawer.aberto{transform:translateX(0)}
@@ -525,6 +484,148 @@ body{
 }
 .btn-limpar:hover{border-color:var(--danger);color:var(--danger)}
 
+/* ── SELETOR DE PRODUTO AVANÇADO ── */
+.prod-selector{position:relative}
+.prod-search-wrap{
+  position:relative;display:flex;align-items:center;
+}
+.prod-search-icon{
+  position:absolute;left:10px;color:var(--muted2);font-size:13px;pointer-events:none;
+}
+.prod-search{
+  width:100%;
+  background:var(--card);
+  border:1px solid var(--border2);
+  color:var(--text);
+  border-radius:var(--r);
+  padding:9px 11px 9px 32px;
+  font-size:14px;font-family:var(--sans);
+  outline:none;
+  transition:border-color .2s;
+}
+.prod-search:focus{border-color:var(--blue)}
+.prod-search::placeholder{color:var(--muted)}
+.prod-search-clear{
+  position:absolute;right:8px;
+  background:none;border:none;color:var(--muted2);
+  cursor:pointer;font-size:14px;padding:4px;
+  display:none;
+}
+.prod-search-clear:hover{color:var(--text)}
+
+/* Filtros suspensos (Fase / Linha / Unidade) */
+.filtros-selects{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+  margin-top:8px;
+}
+@media(max-width:400px){
+  .filtros-selects{grid-template-columns:1fr}
+}
+.filtro-select-wrap{
+  display:flex;flex-direction:column;gap:3px;
+}
+.filtro-select-label{
+  font-family:var(--mono);font-size:9px;
+  text-transform:uppercase;letter-spacing:1px;
+  color:var(--muted2);
+}
+.filtro-select{
+  width:100%;
+  background:var(--card);
+  border:1px solid var(--border2);
+  color:var(--text);
+  border-radius:var(--r);
+  padding:6px 8px;
+  font-size:12px;font-family:var(--mono);
+  outline:none;
+  cursor:pointer;
+  appearance:none;-webkit-appearance:none;
+  transition:border-color .2s;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%234e6080'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;
+  background-position:right 8px center;
+  padding-right:22px;
+}
+.filtro-select:focus{border-color:var(--blue)}
+.filtro-select.ativo{border-color:var(--blue);color:var(--blue)}
+
+/* Dropdown de resultados */
+.prod-dropdown{
+  position:absolute;top:calc(100% + 4px);left:0;right:0;
+  background:var(--surface);
+  border:1px solid var(--border2);
+  border-radius:var(--r);
+  z-index:300;
+  max-height:220px;overflow-y:auto;
+  box-shadow:0 8px 32px rgba(0,0,0,.5);
+  display:none;
+}
+.prod-dropdown.aberto{display:block}
+.prod-dropdown::-webkit-scrollbar{width:4px}
+.prod-dropdown::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
+
+.prod-opt{
+  padding:9px 12px;
+  cursor:pointer;
+  border-bottom:1px solid var(--border);
+  transition:background .1s;
+  display:flex;align-items:center;justify-content:space-between;gap:8px;
+}
+.prod-opt:last-child{border-bottom:none}
+.prod-opt:hover,.prod-opt.focus{background:var(--card2)}
+.prod-opt.selecionado{background:rgba(33,150,243,.1);border-left:2px solid var(--blue)}
+.prod-opt-nome{font-size:13px;color:var(--text);font-weight:600;line-height:1.3}
+.prod-opt-meta{
+  font-family:var(--mono);font-size:10px;color:var(--muted2);
+  margin-top:2px;
+}
+.prod-opt-peso{
+  font-family:var(--mono);font-size:11px;
+  color:var(--accent);white-space:nowrap;flex-shrink:0;
+}
+.prod-nenhum{
+  padding:20px;text-align:center;
+  font-family:var(--mono);font-size:12px;color:var(--muted);
+}
+
+/* Produto selecionado (chip) */
+.prod-selecionado-chip{
+  display:none;
+  align-items:center;gap:8px;
+  background:rgba(33,150,243,.1);
+  border:1px solid rgba(33,150,243,.3);
+  border-radius:var(--r);
+  padding:8px 12px;
+  margin-top:7px;
+}
+.prod-selecionado-chip.visivel{display:flex}
+.prod-chip-nome{font-size:13px;font-weight:700;color:var(--text);flex:1}
+.prod-chip-meta{font-family:var(--mono);font-size:10px;color:var(--muted2)}
+.prod-chip-clear{
+  background:none;border:none;color:var(--muted2);
+  cursor:pointer;font-size:14px;padding:2px 4px;
+}
+.prod-chip-clear:hover{color:var(--danger)}
+
+/* Resumo de totais por filtro */
+.prod-resumo{
+  margin-top:10px;
+  display:flex;gap:6px;flex-wrap:wrap;
+}
+.resumo-tag{
+  display:flex;align-items:center;gap:5px;
+  background:var(--card2);
+  border:1px solid var(--border2);
+  border-radius:6px;
+  padding:4px 9px;
+  font-family:var(--mono);font-size:10px;
+}
+.resumo-tag-label{color:var(--muted2)}
+.resumo-tag-val{color:var(--text);font-weight:700}
+.resumo-tag-total{color:var(--accent)}
+
 /* ══════════════════════════════════════════
    SEÇÃO 3 — LISTA / CARRINHO
 ══════════════════════════════════════════ */
@@ -648,29 +749,6 @@ body{
 .btn-finalizar:active{transform:scale(.98)}
 
 /* ══════════════════════════════════════════
-   RESUMO / PAINEL LATERAL RÁPIDO
-══════════════════════════════════════════ */
-.resumo-strip{
-  background:var(--surface);
-  border:1px solid var(--border);
-  border-radius:var(--r2);
-  padding:12px 16px;
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:4px;
-}
-.resumo-item{text-align:center}
-.resumo-num{
-  font-family:var(--mono);font-size:18px;
-  font-weight:700;color:var(--accent);
-}
-.resumo-txt{
-  font-size:10px;font-family:var(--mono);
-  text-transform:uppercase;letter-spacing:.8px;
-  color:var(--muted2);
-}
-
-/* ══════════════════════════════════════════
    MODAL CONFIRMAÇÃO
 ══════════════════════════════════════════ */
 .modal-overlay{
@@ -791,66 +869,47 @@ body{
   </div>
 </div>
 
-<!-- ════════════════ TELA DE LOGIN ════════════════ -->
-<div id="tela-login">
-  <div class="login-box">
-    <div class="login-logo">PREVFISH</div>
-    <h2>Previsão de Vendas</h2>
-    <p class="login-sub">Selecione o mês e ano para iniciar os lançamentos</p>
-
-    <div class="mes-ano">
-      <div class="field">
-        <label>Mês</label>
-        <div class="select-wrap">
-          <select id="sel-mes">
-            <option value="1">Janeiro</option><option value="2">Fevereiro</option>
-            <option value="3">Março</option><option value="4">Abril</option>
-            <option value="5">Maio</option><option value="6">Junho</option>
-            <option value="7">Julho</option><option value="8">Agosto</option>
-            <option value="9">Setembro</option><option value="10">Outubro</option>
-            <option value="11">Novembro</option><option value="12">Dezembro</option>
-          </select>
-        </div>
-      </div>
-      <div class="field">
-        <label>Ano</label>
-        <div class="select-wrap">
-          <select id="sel-ano">
-            <option value="2025">2025</option>
-            <option value="2026" selected>2026</option>
-            <option value="2027">2027</option>
-          </select>
-        </div>
-      </div>
-    </div>
-
-    <button class="btn-primario" id="btn-entrar" onclick="entrar()" disabled>
-      Carregar →
-    </button>
-  </div>
-</div>
-
 <!-- ════════════════ APP PRINCIPAL ════════════════ -->
 <div id="app">
 
-  <!-- HEADER -->
+  <!-- HEADER UNIFICADO -->
   <div class="app-header">
-    <div class="header-logo">PREVFISH</div>
-    <div class="header-info">
-      <span class="header-vendedor" id="hdr-vendedor">—</span>
-      <span class="header-periodo" id="hdr-periodo">—</span>
+    <!-- Linha superior: logo + info + sair -->
+    <div class="header-top">
+      <div class="header-logo">PREVFISH</div>
+      <div class="header-info">
+        <span class="header-vendedor" id="hdr-vendedor">—</span>
+        <span class="header-periodo" id="hdr-periodo">—</span>
+      </div>
       <button class="btn-icon" onclick="sair()" title="Sair">⏏</button>
     </div>
-  </div>
-
-  <!-- BARRA DE PROGRESSO -->
-  <div class="progress-wrap">
-    <div class="progress-label">
-      <span>Clientes atendidos</span>
-      <span id="prog-txt">0 / 0</span>
-    </div>
-    <div class="progress-bar">
-      <div class="progress-fill" id="prog-fill" style="width:0%"></div>
+    <!-- Stats bar: progresso + totais por fase/unidade -->
+    <div class="header-stats" id="header-stats">
+      <!-- Progresso de clientes -->
+      <div class="hstat-prog">
+        <div class="hstat-prog-label">
+          <span>Clientes</span>
+          <span id="prog-txt">0/0</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="prog-fill" style="width:0%"></div>
+        </div>
+      </div>
+      <!-- Stats dinâmicos: atendidos / sem-venda / total kg / por fase -->
+      <div class="hstat">
+        <div class="hstat-val" id="res-atendidos">0</div>
+        <div class="hstat-lbl">Atendidos</div>
+      </div>
+      <div class="hstat">
+        <div class="hstat-val warn" id="res-sem-venda">0</div>
+        <div class="hstat-lbl">Sem venda</div>
+      </div>
+      <div class="hstat">
+        <div class="hstat-val" id="res-total-kg">0</div>
+        <div class="hstat-lbl">Total kg</div>
+      </div>
+      <!-- Totais por fase/unidade inseridos dinamicamente aqui -->
+      <div id="hdr-fase-stats"></div>
     </div>
   </div>
 
@@ -865,22 +924,6 @@ body{
       📋 Ver lista de clientes
       <span id="btn-pendentes-badge" style="margin-left:auto;background:var(--warn);color:#000;border-radius:20px;padding:1px 7px;font-size:10px"></span>
     </button>
-
-    <!-- RESUMO RÁPIDO -->
-    <div class="resumo-strip">
-      <div class="resumo-item">
-        <div class="resumo-num" id="res-atendidos">0</div>
-        <div class="resumo-txt">Atendidos</div>
-      </div>
-      <div class="resumo-item">
-        <div class="resumo-num" id="res-sem-venda">0</div>
-        <div class="resumo-txt">Sem venda</div>
-      </div>
-      <div class="resumo-item">
-        <div class="resumo-num" id="res-total-kg">0</div>
-        <div class="resumo-txt">Total kg</div>
-      </div>
-    </div>
 
     <!-- ══ SEÇÃO 1 — CLIENTE ATUAL ══ -->
     <div class="secao">
@@ -924,42 +967,83 @@ body{
         </div>
 
         <div class="form-grid">
-          <!-- Tipo (unidade) -->
-          <div>
-            <label class="form-label">Tipo / Unidade</label>
-            <div class="select-wrap">
-              <select class="form-select" id="f-tipo" onchange="calcularKg()">
-                <option value="Saco">Saco (25 kg)</option>
-                <option value="Granel">Granel (1 kg)</option>
-                <option value="Bag">Bag (750 kg)</option>
-              </select>
-            </div>
-          </div>
-
-          <!-- Quantidade -->
-          <div>
-            <label class="form-label">Quantidade</label>
-            <input class="form-input" type="number" id="f-qtd"
-              placeholder="0" min="0" step="0.5"
-              oninput="calcularKg()"/>
-          </div>
-
-          <!-- Produto -->
+          <!-- Produto — seletor avançado (linha inteira) -->
           <div class="form-full">
             <label class="form-label">Produto</label>
-            <div class="select-wrap">
-              <select class="form-select" id="f-produto" onchange="atualizarProdutoSelecionado()">
-                <option value="">Selecione um produto...</option>
-              </select>
+
+            <!-- Campo oculto que guarda o valor selecionado (cod) -->
+            <input type="hidden" id="f-produto"/>
+
+            <div class="prod-selector" id="prod-selector">
+
+              <!-- Barra de busca -->
+              <div class="prod-search-wrap">
+                <span class="prod-search-icon">🔍</span>
+                <input class="prod-search" id="prod-search"
+                  type="text" placeholder="Buscar produto..."
+                  oninput="filtrarProdutos()"
+                  onfocus="abrirDropdown()"
+                  onkeydown="navDropdown(event)"
+                  autocomplete="off"/>
+                <button class="prod-search-clear" id="prod-search-clear"
+                  onclick="limparSelecaoProduto()" title="Limpar">✕</button>
+              </div>
+
+              <!-- Filtros suspensos: Fase / Linha / Unidade -->
+              <div class="filtros-selects" id="filtros-selects">
+                <div class="filtro-select-wrap">
+                  <span class="filtro-select-label">Fase</span>
+                  <select class="filtro-select" id="sel-fase" onchange="selecionarFiltro('fase', this.value)">
+                    <option value="">Todas</option>
+                  </select>
+                </div>
+                <div class="filtro-select-wrap">
+                  <span class="filtro-select-label">Linha</span>
+                  <select class="filtro-select" id="sel-linha" onchange="selecionarFiltro('linha', this.value)">
+                    <option value="">Todas</option>
+                  </select>
+                </div>
+                <div class="filtro-select-wrap">
+                  <span class="filtro-select-label">Unidade</span>
+                  <select class="filtro-select" id="sel-unid" onchange="selecionarFiltro('unidade', this.value)">
+                    <option value="">Todas</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Produto selecionado (chip) -->
+              <div class="prod-selecionado-chip" id="prod-chip">
+                <div style="flex:1;min-width:0">
+                  <div class="prod-chip-nome" id="prod-chip-nome">—</div>
+                  <div class="prod-chip-meta" id="prod-chip-meta"></div>
+                </div>
+                <button class="prod-chip-clear" onclick="limparSelecaoProduto()" title="Remover">✕</button>
+              </div>
+
+              <!-- Dropdown de resultados -->
+              <div class="prod-dropdown" id="prod-dropdown"></div>
+
             </div>
+
+            <!-- Resumo de totais do carrinho por fase -->
+            <div class="prod-resumo" id="prod-resumo" style="display:none"></div>
           </div>
 
           <!-- Preview KG -->
-          <div class="form-full">
-            <label class="form-label">Total em kg</label>
-            <div class="kg-preview">
-              <span class="kg-valor" id="kg-valor">0</span>
-              <span class="kg-unid">kg calculados</span>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px" class="form-full">
+            <div>
+              <label class="form-label">Quantidade</label>
+              <input class="form-input" type="text" id="f-qtd"
+                placeholder="0" inputmode="numeric" pattern="[0-9]*"
+                oninput="mascaraQtd(this)"
+                onkeydown="return soInteiroKey(event)"/>
+            </div>
+            <div>
+              <label class="form-label">Total em kg</label>
+              <div class="kg-preview">
+                <span class="kg-valor" id="kg-valor">0</span>
+                <span class="kg-unid">kg</span>
+              </div>
             </div>
           </div>
 
@@ -1110,21 +1194,20 @@ function jsonp(url) {
 // INICIALIZAÇÃO — carrega dados ao abrir
 // ════════════════════════════════════════════════
 window.onload = async () => {
-  // Define o mês atual no select
   const agora = new Date();
-  document.getElementById("sel-mes").value = agora.getMonth() + 1;
+  const mesAtual = agora.getMonth() + 1;
+  const anoAtual = agora.getFullYear();
 
   mostrarLoading("Conectando à planilha...");
   try {
     const data = await jsonp(`${API_URL}?action=getData`);
-    // Guarda produtos e clientes; vendedor virá do sistema de login futuro
-    estado.produtos      = data.produtos  || [];
-    estado._todosClientes= data.clientes  || [];
-    // Extrai lista de vendedores para uso interno (filtro de clientes)
+    estado.produtos         = data.produtos   || [];
+    estado._todosClientes   = data.clientes   || [];
     estado._todosVendedores = data.vendedores || [];
 
-    esconderLoading();
-    document.getElementById("btn-entrar").disabled = false;
+    // Abre o app direto, sem tela de login
+    await entrar();
+
   } catch(e) {
     esconderLoading();
     toast("❌ Erro ao conectar: " + e.message, "error");
@@ -1135,8 +1218,9 @@ window.onload = async () => {
 // ENTRAR — configura período e abre o app
 // ════════════════════════════════════════════════
 async function entrar() {
-  const mes = document.getElementById("sel-mes").value;
-  const ano = document.getElementById("sel-ano").value;
+  const agora = new Date();
+  const mes = String(agora.getMonth() + 1);
+  const ano = String(agora.getFullYear());
 
   // ── PONTO DE INTEGRAÇÃO FUTURA ──────────────────────────────
   // Quando o sistema de login estiver pronto, substitua a linha
@@ -1206,9 +1290,6 @@ async function entrar() {
   atualizarClienteAtual();
   atualizarHeader();
   atualizarResumo();
-
-  document.getElementById("tela-login").style.display = "none";
-  document.getElementById("app").style.display        = "block";
   esconderLoading();
 }
 
@@ -1217,52 +1298,292 @@ async function entrar() {
 // ──────────────────────────────────────────────
 function unidadeParaTipo(unidade) {
   if (!unidade) return "Saco";
-  const u = String(unidade).toLowerCase();
-  if (u.includes("bag"))    return "Bag";
-  if (u.includes("granel")) return "Granel";
+  const u = String(unidade).toUpperCase().trim();
+  if (u === "BG"  || u.includes("BAG"))    return "Bag";
+  if (u === "KG"  || u.includes("GRANEL")) return "Granel";
+  if (u === "SC"  || u.includes("SACO"))   return "Saco";
   return "Saco";
 }
 
 // ════════════════════════════════════════════════
-// PREENCHE SELECT DE PRODUTOS
-// Tenta todas as variações de nome de campo que o
-// Apps Script pode retornar (maiúsculo/minúsculo)
+// SELETOR DE PRODUTO AVANÇADO
 // ════════════════════════════════════════════════
+
+// Cache dos produtos processados e estado do seletor
+let _prodCache    = [];   // [{cod, nome, fase, subGrupo, pellet, pesoLiq, unidade}]
+let _filtros      = { fase: "", linha: "", unidade: "" }; // filtros ativos
+let _dropFocusIdx = -1;   // índice do item focado no dropdown (teclado)
+let _prodSel      = null; // produto atualmente selecionado
+
+// ── Processa e indexa os produtos da planilha ──
 function preencherSelectProdutos() {
-  const sel = document.getElementById("f-produto");
-  sel.innerHTML = '<option value="">Selecione um produto...</option>';
+  _prodCache = [];
 
   if (!estado.produtos || estado.produtos.length === 0) {
-    console.warn("PREVFISH: nenhum produto carregado. Verifique aba d_produtos na planilha.");
+    console.warn("PREVFISH: nenhum produto carregado.");
     return;
   }
-
-  // Log para diagnóstico — mostra as chaves do primeiro produto
   console.log("PREVFISH: campos do produto[0]:", Object.keys(estado.produtos[0]));
 
   estado.produtos.forEach(p => {
-    // Tenta todas as variações de chave possíveis
     const cod  = String(
-      p.COD_PRODUTO ?? p.cod_produto ?? p.Codigo ?? p.codigo ?? p.COD ?? p.cod ?? ""
+      p["Codigo"] ?? p["codigo"] ?? p["COD_PRODUTO"] ?? p["cod_produto"] ?? p["COD"] ?? ""
     ).trim();
     const nome = String(
-      p.PRODUTO ?? p.produto ?? p.Nome ?? p.nome ?? p.DESCRICAO ?? p.descricao ?? ""
+      p["dProduto.DESCR"]    ??
+      p["dProduto.DESCRICAO"]??
+      p["dProduto.DESCR."]   ??
+      p["DESCRICAO"]         ??
+      p["PRODUTO"]           ??
+      p["Nome"]              ??
+      p["nome"]              ??
+      Object.entries(p).find(([k]) => k.startsWith("dProduto.DESC"))?.[1] ??
+      ""
     ).trim();
 
-    if (!nome) return; // ignora linhas sem nome
+    if (!nome) return;
 
-    const op            = document.createElement("option");
-    op.value            = cod || nome; // usa nome como fallback de valor
-    op.dataset.nome     = nome;
-    op.dataset.fase     = String(p.FASE     ?? p.fase     ?? "");
-    op.dataset.subGrupo = String(p.SUB_GRUPO?? p.sub_grupo?? p.SUBGRUPO ?? "");
-    op.dataset.pellet   = String(p.PELLET   ?? p.pellet   ?? "");
-    op.textContent      = nome;
-    sel.appendChild(op);
+    _prodCache.push({
+      cod:      cod || nome,
+      nome,
+      fase:     String(p["dProduto.FASE"] ?? p["FASE"] ?? p["fase"] ?? "").trim(),
+      subGrupo: String(p["dProduto.SUB_G"] ?? p["dProduto.SUB_GRUPO"] ?? p["SUB_GRUPO"] ?? "").trim(),
+      pellet:   String(p["dProduto.PELLE"] ?? p["dProduto.PELLET"] ?? p["PELLET"] ?? "").trim(),
+      pesoLiq:  parseFloat(p["Peso Liquido"] ?? p["Peso_Liquido"] ?? 0) || 0,
+      unidade:  String(p["Unidade"] ?? p["unidade"] ?? "").trim(),
+    });
   });
 
-  console.log(`PREVFISH: ${sel.options.length - 1} produtos carregados no select.`);
+  console.log(`PREVFISH: ${_prodCache.length} produtos indexados.`);
+
+  // Monta os selects dos 3 filtros
+  montarFiltrosSelects();
+  // Atualiza dropdown (sem filtro)
+  filtrarProdutos();
 }
+
+// ── Popula os selects de filtro ──
+function montarFiltrosSelects() {
+  const fases  = [...new Set(_prodCache.map(p => p.fase).filter(Boolean))].sort();
+  const linhas = [...new Set(_prodCache.map(p => p.subGrupo).filter(Boolean))].sort();
+  const unids  = [...new Set(_prodCache.map(p => p.unidade).filter(Boolean))].sort();
+
+  const UNID_LABEL = { SC: "SC — Saco 25 kg", KG: "KG — Granel 1 kg", BG: "BG — Bag 750 kg" };
+
+  function popular(selId, valores, labelFn) {
+    const sel = document.getElementById(selId);
+    if (!sel) return;
+    sel.innerHTML = '<option value="">Todos</option>';
+    valores.forEach(v => {
+      const op = document.createElement("option");
+      op.value       = v;
+      op.textContent = labelFn ? (labelFn[v] || v) : v;
+      sel.appendChild(op);
+    });
+  }
+
+  popular("sel-fase",  fases,  null);
+  popular("sel-linha", linhas, null);
+  popular("sel-unid",  unids,  UNID_LABEL);
+}
+
+function selecionarFiltro(campo, valor) {
+  _filtros[campo] = valor;
+  _dropFocusIdx   = -1;
+  // Destaque visual no select quando há filtro ativo
+  const selMap = { fase: "sel-fase", linha: "sel-linha", unidade: "sel-unid" };
+  const sel = document.getElementById(selMap[campo]);
+  if (sel) sel.classList.toggle("ativo", valor !== "");
+  filtrarProdutos();
+  abrirDropdown();
+}
+
+// ── Filtra e renderiza o dropdown ──
+function filtrarProdutos() {
+  const q   = (document.getElementById("prod-search")?.value || "").toLowerCase().trim();
+  const clr = document.getElementById("prod-search-clear");
+  if (clr) clr.style.display = q ? "block" : "none";
+
+  const lista = _prodCache.filter(p => {
+    const faseOk  = !_filtros.fase    || p.fase     === _filtros.fase;
+    const linhaOk = !_filtros.linha   || p.subGrupo === _filtros.linha;
+    const unidOk  = !_filtros.unidade || p.unidade  === _filtros.unidade;
+    const buscaOk = !q ||
+      p.nome.toLowerCase().includes(q) ||
+      p.cod.toLowerCase().includes(q)  ||
+      p.subGrupo.toLowerCase().includes(q);
+    return faseOk && linhaOk && unidOk && buscaOk;
+  });
+
+  renderizarDropdown(lista);
+}
+
+function renderizarDropdown(lista) {
+  const dd = document.getElementById("prod-dropdown");
+  if (!dd) return;
+  dd.innerHTML = "";
+  _dropFocusIdx = -1;
+
+  if (lista.length === 0) {
+    dd.innerHTML = '<div class="prod-nenhum">Nenhum produto encontrado</div>';
+    return;
+  }
+
+  const UNID_COR = { SC:"#a78bfa", KG:"#34d399", BG:"#fb923c" };
+
+  lista.forEach((p, i) => {
+    const div = document.createElement("div");
+    div.className = "prod-opt" + (_prodSel?.cod === p.cod ? " selecionado" : "");
+    div.dataset.idx = i;
+    const unidColor = UNID_COR[p.unidade] || "var(--muted2)";
+    const badgeUnid = p.unidade
+      ? `<span style="font-family:var(--mono);font-size:10px;padding:1px 6px;border-radius:20px;border:1px solid ${unidColor}40;background:${unidColor}15;color:${unidColor}">${p.unidade}</span>`
+      : "";
+    div.innerHTML = `
+      <div style="flex:1;min-width:0">
+        <div class="prod-opt-nome">${destacarBusca(p.nome)}</div>
+        <div class="prod-opt-meta">${[p.fase, p.subGrupo, p.pellet].filter(Boolean).join(" · ")}</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
+        ${badgeUnid}
+        <div class="prod-opt-peso">${p.pesoLiq > 0 ? p.pesoLiq + " kg" : ""}</div>
+      </div>
+    `;
+    // Usa mousedown/touchstart para selecionar antes do blur disparar (iOS Safari)
+    const onSelect = (e) => { e.preventDefault(); selecionarProduto(p); };
+    div.addEventListener("mousedown", onSelect);
+    div.addEventListener("touchstart", onSelect, { passive: false });
+    dd.appendChild(div);
+  });
+}
+
+// Destaca o trecho buscado em amarelo
+function destacarBusca(nome) {
+  const q = (document.getElementById("prod-search")?.value || "").trim();
+  if (!q) return nome;
+  const re = new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")})`, "gi");
+  return nome.replace(re, '<mark style="background:rgba(245,158,11,.3);color:var(--warn);border-radius:2px">$1</mark>');
+}
+
+// ── Seleciona produto ──
+function selecionarProduto(p) {
+  _prodSel = p;
+
+  // Atualiza input oculto
+  document.getElementById("f-produto").value = p.cod;
+
+  // Chip de selecionado
+  document.getElementById("prod-chip").classList.add("visivel");
+  document.getElementById("prod-chip-nome").textContent = p.nome;
+  document.getElementById("prod-chip-meta").textContent =
+    [p.fase, p.subGrupo, p.pellet, p.pesoLiq > 0 ? p.pesoLiq + " kg" : ""].filter(Boolean).join(" · ");
+
+  // Limpa busca e fecha dropdown
+  document.getElementById("prod-search").value = "";
+  document.getElementById("prod-search-clear").style.display = "none";
+  fecharDropdown();
+
+  // Recalcula kg
+  calcularKg();
+}
+
+function limparSelecaoProduto() {
+  _prodSel = null;
+  _filtros = { fase: "", linha: "", unidade: "" };
+  document.getElementById("f-produto").value = "";
+  document.getElementById("prod-chip").classList.remove("visivel");
+  document.getElementById("prod-search").value = "";
+  document.getElementById("prod-search-clear").style.display = "none";
+  // Reseta os selects de filtro
+  ["sel-fase","sel-linha","sel-unid"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.value = ""; el.classList.remove("ativo"); }
+  });
+  filtrarProdutos();
+  calcularKg();
+}
+
+// ── Dropdown abrir/fechar ──
+function abrirDropdown() {
+  filtrarProdutos();
+  document.getElementById("prod-dropdown").classList.add("aberto");
+}
+
+function fecharDropdown() {
+  document.getElementById("prod-dropdown").classList.remove("aberto");
+  _dropFocusIdx = -1;
+}
+
+// Fecha ao clicar fora — com pequeno delay para iOS não cortar o toque no item
+document.addEventListener("click", e => {
+  if (!document.getElementById("prod-selector")?.contains(e.target)) {
+    setTimeout(fecharDropdown, 150);
+  }
+});
+
+// ── Navegação por teclado ──
+function navDropdown(e) {
+  const dd   = document.getElementById("prod-dropdown");
+  const opts = dd.querySelectorAll(".prod-opt");
+  if (!opts.length) return;
+
+  if (e.key === "ArrowDown") {
+    e.preventDefault();
+    _dropFocusIdx = Math.min(_dropFocusIdx + 1, opts.length - 1);
+  } else if (e.key === "ArrowUp") {
+    e.preventDefault();
+    _dropFocusIdx = Math.max(_dropFocusIdx - 1, 0);
+  } else if (e.key === "Enter" && _dropFocusIdx >= 0) {
+    e.preventDefault();
+    opts[_dropFocusIdx].click();
+    return;
+  } else if (e.key === "Escape") {
+    fecharDropdown(); return;
+  } else return;
+
+  opts.forEach((o, i) => o.classList.toggle("focus", i === _dropFocusIdx));
+  opts[_dropFocusIdx]?.scrollIntoView({ block: "nearest" });
+}
+
+// ════════════════════════════════════════════════
+// RESUMO DE TOTAIS POR FASE (no carrinho)
+// ════════════════════════════════════════════════
+function atualizarResumoProdutos() {
+  const wrap = document.getElementById("prod-resumo");
+  if (!wrap) return;
+
+  if (estado.itensCliente.length === 0) {
+    wrap.style.display = "none"; return;
+  }
+
+  // Agrupa kg por fase
+  const porFase = {};
+  estado.itensCliente.forEach(item => {
+    const prod = _prodCache.find(p => p.cod === item.codProduto);
+    const fase = prod?.fase || "Sem fase";
+    porFase[fase] = (porFase[fase] || 0) + item.totalKg;
+  });
+
+  const totalGeral = Object.values(porFase).reduce((s,v)=>s+v, 0);
+
+  wrap.style.display = "flex";
+  wrap.innerHTML = "";
+
+  // Tag total geral
+  const tagTotal = document.createElement("div");
+  tagTotal.className = "resumo-tag";
+  tagTotal.innerHTML = `<span class="resumo-tag-label">Total</span><span class="resumo-tag-total">${nf(totalGeral)} kg</span>`;
+  wrap.appendChild(tagTotal);
+
+  // Uma tag por fase
+  Object.entries(porFase).sort().forEach(([fase, kg]) => {
+    const tag = document.createElement("div");
+    tag.className = "resumo-tag";
+    tag.innerHTML = `<span class="resumo-tag-label">${fase}</span><span class="resumo-tag-val">${nf(kg)} kg</span>`;
+    wrap.appendChild(tag);
+  });
+}
+
 
 // ════════════════════════════════════════════════
 // PREENCHE SELECT DE CLIENTES (navegação)
@@ -1340,42 +1661,43 @@ function atualizarClienteAtual() {
 // CÁLCULO DE KG
 // ════════════════════════════════════════════════
 function calcularKg() {
-  const tipo = document.getElementById("f-tipo").value;
-  const qtd  = parseFloat(document.getElementById("f-qtd").value) || 0;
-  const kg   = qtd * (KG_POR_UNIDADE[tipo] || 1);
-  document.getElementById("kg-valor").textContent = kg % 1 === 0 ? kg : kg.toFixed(2);
+  const qtd      = getQtd();
+  const pesoReal = _prodSel?.pesoLiq || 0;
+  const pesoUnit = pesoReal > 0 ? pesoReal : 1;
+  const kg       = qtd * pesoUnit;
+  document.getElementById("kg-valor").textContent = nf(kg);
 }
 
 function atualizarProdutoSelecionado() {
-  // Pode exibir info extra do produto se necessário
+  calcularKg();
 }
 
 // ════════════════════════════════════════════════
 // ADICIONAR / EDITAR ITEM
 // ════════════════════════════════════════════════
 function adicionarItem() {
-  const selProd = document.getElementById("f-produto");
-  const tipo    = document.getElementById("f-tipo").value;
-  const qtd     = parseFloat(document.getElementById("f-qtd").value) || 0;
+  const qtd  = getQtd();
 
-  if (!selProd.value) { toast("Selecione um produto.", "warn"); return; }
-  if (qtd <= 0)       { toast("Informe uma quantidade válida.", "warn"); return; }
+  if (!_prodSel)  { toast("Selecione um produto.", "warn"); return; }
+  if (qtd <= 0)   { toast("Informe uma quantidade válida.", "warn"); return; }
 
-  const op      = selProd.options[selProd.selectedIndex];
-  const pesoU   = KG_POR_UNIDADE[tipo] || 1;
+  const pesoU   = _prodSel.pesoLiq > 0 ? _prodSel.pesoLiq : 1;
   const totalKg = qtd * pesoU;
+  // Deriva tipo a partir da unidade do produto
+  const tipo    = unidadeParaTipo(_prodSel.unidade);
 
   const item = {
     id:          estado.editandoId || gerarId(),
-    codProduto:  selProd.value,
-    nomeProduto: op.dataset.nome || op.textContent,
+    codProduto:  _prodSel.cod,
+    nomeProduto: _prodSel.nome,
     tipo,
+    unidade:     _prodSel.unidade || "",
     quantidade:  qtd,
     pesoLiquido: pesoU,
     totalKg,
-    fase:        op.dataset.fase     || "",
-    subGrupo:    op.dataset.subGrupo || "",
-    pellet:      op.dataset.pellet   || "",
+    fase:        _prodSel.fase     || "",
+    subGrupo:    _prodSel.subGrupo || "",
+    pellet:      _prodSel.pellet   || "",
   };
 
   if (estado.editandoId) {
@@ -1426,9 +1748,9 @@ function renderizarLista() {
         <span class="item-badge ${badgeClass}">${item.tipo}</span>
       </div>
       <div class="item-meta">
-        <span>Qtd: <strong>${item.quantidade % 1 === 0 ? item.quantidade : item.quantidade.toFixed(2)}</strong></span>
-        <span>Peso unit: <strong>${item.pesoLiquido} kg</strong></span>
-        <span class="item-kg">⟹ ${item.totalKg % 1 === 0 ? item.totalKg : item.totalKg.toFixed(2)} kg</span>
+        <span>Qtd: <strong>${nf(item.quantidade)}</strong></span>
+        <span>Peso unit: <strong>${nf(item.pesoLiquido)} kg</strong></span>
+        <span class="item-kg">⟹ ${nf(item.totalKg)} kg</span>
       </div>
       <div class="item-acoes">
         <button class="btn-edit" onclick="editarItem('${item.id}')">✏️ Editar</button>
@@ -1438,8 +1760,10 @@ function renderizarLista() {
     listEl.appendChild(card);
   });
 
-  document.getElementById("total-kg-display").textContent =
-    (totalKg % 1 === 0 ? totalKg : totalKg.toFixed(2)) + " kg";
+  document.getElementById("total-kg-display").textContent = nf(totalKg) + " kg";
+
+  // Atualiza resumo por fase
+  atualizarResumoProdutos();
 }
 
 // ════════════════════════════════════════════════
@@ -1451,10 +1775,15 @@ function editarItem(id) {
 
   estado.editandoId = id;
 
-  // Preenche o formulário com os dados do item
-  document.getElementById("f-produto").value = item.codProduto;
-  document.getElementById("f-tipo").value    = item.tipo;
-  document.getElementById("f-qtd").value     = item.quantidade;
+  // Restaura o produto selecionado no seletor avançado
+  const prod = _prodCache.find(p => p.cod === item.codProduto)
+    || { cod: item.codProduto, nome: item.nomeProduto, fase: item.fase,
+         subGrupo: item.subGrupo, pellet: item.pellet, pesoLiq: item.pesoLiquido };
+  selecionarProduto(prod);
+
+  // Restaura quantidade com formatação de milhares
+  const qtdEl = document.getElementById("f-qtd");
+  qtdEl.value = item.quantidade > 0 ? item.quantidade.toLocaleString("pt-BR") : "";
   calcularKg();
 
   // Exibe chip de edição
@@ -1491,9 +1820,8 @@ function excluirItem(id) {
 // LIMPAR FORMULÁRIO
 // ════════════════════════════════════════════════
 function limparFormulario() {
-  document.getElementById("f-produto").value = "";
-  document.getElementById("f-tipo").value    = "Saco";
-  document.getElementById("f-qtd").value     = "";
+  limparSelecaoProduto();
+  document.getElementById("f-qtd").value  = "";
   document.getElementById("kg-valor").textContent = "0";
 }
 
@@ -1528,7 +1856,7 @@ function confirmarFinalizar() {
   const totalKg = estado.itensCliente.reduce((s,i)=>s+i.totalKg, 0);
   abrirModal(
     "Finalizar cliente?",
-    `Salvar ${estado.itensCliente.length} item(s) para <strong>${c.nomeCliente}</strong>, totalizando ${totalKg.toFixed(2)} kg?`,
+    `Salvar ${estado.itensCliente.length} item(s) para <strong>${c.nomeCliente}</strong>, totalizando ${nf(totalKg)} kg?`,
     () => salvarNoServidor(c.codCliente, c.nomeCliente, estado.itensCliente, false)
   );
 }
@@ -1537,32 +1865,38 @@ function confirmarFinalizar() {
 // SALVAR NO SERVIDOR (Google Sheets)
 // ════════════════════════════════════════════════
 async function salvarNoServidor(codCliente, nomeCliente, itens, semVenda) {
-  const v = estado.vendedor;
+  const v = estado.vendedor || { codigo: "sem-login", nome: "Sem login" };
   mostrarLoading("Salvando no servidor...");
 
   try {
-    // Monta o array de linhas no formato esperado pelo Apps Script
     const linhas = semVenda ? [] : itens.map(i => ({
       codCliente,
       nomeCliente,
       codProduto:  i.codProduto,
       nomeProduto: i.nomeProduto,
-      unidade:     i.tipo,
+      unidade:     i.unidade || i.tipo || "",
       quantidade:  i.quantidade,
       pesoLiquido: i.pesoLiquido,
-      fase:        i.fase    || "",
-      subGrupo:    i.subGrupo|| "",
-      pellet:      i.pellet  || "",
-      observacao:  i.observacao || "",
+      totalKg:     i.totalKg,
+      fase:        i.fase     || "",
+      subGrupo:    i.subGrupo || "",
+      pellet:      i.pellet   || "",
     }));
 
-    const url = `${API_URL}?action=salvarLancamentos`
-      + `&codVendedor=${encodeURIComponent(v.codigo)}`
-      + `&nomeVendedor=${encodeURIComponent(v.nome)}`
-      + `&mes=${estado.mes}&ano=${estado.ano}`
-      + `&linhas=${encodeURIComponent(JSON.stringify(linhas))}`;
+    const payload = {
+      action:       "salvarLancamentos",
+      codVendedor:  v.codigo,
+      nomeVendedor: v.nome,
+      mes:          estado.mes,
+      ano:          estado.ano,
+      semVenda:     semVenda,
+      linhas:       JSON.stringify(linhas),
+    };
 
-    await jsonp(url);
+    // Monta URL com todos os parâmetros
+    const params = Object.entries(payload)
+      .map(([k,val]) => `${k}=${encodeURIComponent(val)}`).join("&");
+    await jsonp(`${API_URL}?${params}`);
 
     // Atualiza estado local
     const statusFinal = semVenda ? "sem-venda" : "ok";
@@ -1608,14 +1942,33 @@ function atualizarResumo() {
   const sessoes  = Object.values(estado.sessao);
   const ok       = sessoes.filter(s => s.status === "ok").length;
   const semVenda = sessoes.filter(s => s.status === "sem-venda").length;
-  const totalKg  = sessoes.reduce((s,c) => s + (c.totalKg||0), 0);
 
-  document.getElementById("res-atendidos").textContent  = ok;
-  document.getElementById("res-sem-venda").textContent  = semVenda;
-  document.getElementById("res-total-kg").textContent   =
-    totalKg >= 1000
-      ? (totalKg/1000).toFixed(1) + "t"
-      : Math.round(totalKg) + "";
+  // Agrega kg de todas as sessões finalizadas
+  const porFase = {};
+  sessoes.forEach(sess => {
+    (sess.itens || []).forEach(item => {
+      const fase = item.fase || "—";
+      porFase[fase] = (porFase[fase] || 0) + (item.totalKg || 0);
+    });
+  });
+  const totalKg = Object.values(porFase).reduce((s,v)=>s+v, 0);
+
+  document.getElementById("res-atendidos").textContent = ok;
+  document.getElementById("res-sem-venda").textContent = semVenda;
+  document.getElementById("res-total-kg").textContent  = nf(totalKg) + " kg";
+
+  // Totais por fase no header
+  const cont = document.getElementById("hdr-fase-stats");
+  if (cont) {
+    cont.innerHTML = "";
+    cont.style.display = "contents";
+    Object.entries(porFase).sort().forEach(([fase, kg]) => {
+      const d = document.createElement("div");
+      d.className = "hstat";
+      d.innerHTML = `<div class="hstat-val">${nf(kg)}</div><div class="hstat-lbl">${fase} kg</div>`;
+      cont.appendChild(d);
+    });
+  }
 
   atualizarProgresso();
   renderizarPainelClientes();
@@ -1688,11 +2041,7 @@ function sair() {
   abrirModal(
     "Sair?",
     "Dados não salvos serão perdidos. Tem certeza que deseja sair?",
-    () => {
-      document.getElementById("app").style.display       = "none";
-      document.getElementById("tela-login").style.display = "flex";
-      estado = { ...estado, vendedor:null, sessao:{}, itensCliente:[], clienteIdx:0 };
-    }
+    () => location.reload()
   );
 }
 
@@ -1717,8 +2066,40 @@ document.getElementById("modal").addEventListener("click", e => {
 });
 
 // ════════════════════════════════════════════════
-// UTILITÁRIOS
+// FORMATAÇÃO DE NÚMEROS
 // ════════════════════════════════════════════════
+// Formata número com separador de milhares pt-BR: 1.000 / 200.000
+function nf(n) {
+  const v = Math.round(n);
+  return v.toLocaleString("pt-BR");
+}
+
+// Lê o valor inteiro real do campo f-qtd (sem pontos)
+function getQtd() {
+  const raw = (document.getElementById("f-qtd")?.value || "").replace(/\./g,"");
+  return parseInt(raw, 10) || 0;
+}
+
+// Máscara: permite só dígitos e formata com ponto de milhar
+function mascaraQtd(el) {
+  const digits = el.value.replace(/\D/g,"");
+  const num    = parseInt(digits, 10) || 0;
+  el.value     = num > 0 ? num.toLocaleString("pt-BR") : "";
+  calcularKg();
+}
+
+// Bloqueia teclas não numéricas no campo quantidade
+function soInteiroKey(e) {
+  // iOS virtual keyboard envia keyCode 229 (composição) — deixa passar, a máscara trata
+  if (e.keyCode === 229) return true;
+  // Permite: setas, backspace, delete, tab, enter, home, end
+  if ([8,9,13,35,36,37,38,39,40,46].includes(e.keyCode)) return true;
+  // Bloqueia qualquer coisa que não seja dígito (0-9)
+  if (e.key < "0" || e.key > "9") { e.preventDefault(); return false; }
+  return true;
+}
+
+
 function gerarId() {
   return Date.now().toString(36) + Math.random().toString(36).slice(2,5);
 }
