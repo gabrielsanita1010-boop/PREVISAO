@@ -514,42 +514,31 @@ body{
 .prod-search-clear:hover{color:var(--text)}
 
 /* Filtros suspensos (Fase / Linha / Unidade) */
-.filtros-selects{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:8px;
-  margin-top:8px;
-}
-@media(max-width:400px){
-  .filtros-selects{grid-template-columns:1fr}
-}
-.filtro-select-wrap{
-  display:flex;flex-direction:column;gap:3px;
-}
-.filtro-select-label{
+.filtro-grupo{margin-top:8px}
+.filtro-grupo-label{
+  display:block;
   font-family:var(--mono);font-size:9px;
   text-transform:uppercase;letter-spacing:1px;
-  color:var(--muted2);
+  color:var(--muted2);margin-bottom:4px;
 }
-.filtro-select{
-  width:100%;
-  background:var(--card);
+.chips-filtro{display:flex;flex-wrap:wrap;gap:5px}
+.fchip{
+  font-family:var(--mono);font-size:11px;
+  padding:3px 10px;border-radius:20px;
   border:1px solid var(--border2);
-  color:var(--text);
-  border-radius:var(--r);
-  padding:6px 8px;
-  font-size:12px;font-family:var(--mono);
-  outline:none;
-  cursor:pointer;
-  appearance:none;-webkit-appearance:none;
-  transition:border-color .2s;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%234e6080'/%3E%3C/svg%3E");
-  background-repeat:no-repeat;
-  background-position:right 8px center;
-  padding-right:22px;
+  background:var(--card2);color:var(--muted2);
+  cursor:pointer;transition:all .15s;
+  white-space:nowrap;line-height:1.6;
 }
-.filtro-select:focus{border-color:var(--blue)}
-.filtro-select.ativo{border-color:var(--blue);color:var(--blue)}
+.fchip:hover{border-color:var(--blue);color:var(--text)}
+.fchip.ativo{background:rgba(33,150,243,.15);border-color:var(--blue);color:var(--blue);font-weight:600}
+/* Chips de unidade com cor própria */
+.fchip-BG.ativo{background:rgba(0,229,160,.12);border-color:var(--accent);color:var(--accent)}
+.fchip-BG:hover{border-color:var(--accent);color:var(--accent)}
+.fchip-SC.ativo{background:rgba(33,150,243,.15);border-color:var(--blue);color:#60b4ff}
+.fchip-SC:hover{border-color:var(--blue);color:#60b4ff}
+.fchip-KG.ativo{background:rgba(245,158,11,.10);border-color:var(--warn);color:var(--warn)}
+.fchip-KG:hover{border-color:var(--warn);color:var(--warn)}
 
 /* Dropdown de resultados */
 .prod-dropdown{
@@ -989,25 +978,19 @@ body{
                   onclick="limparSelecaoProduto()" title="Limpar">✕</button>
               </div>
 
-              <!-- Filtros suspensos: Fase / Linha / Unidade -->
-              <div class="filtros-selects" id="filtros-selects">
-                <div class="filtro-select-wrap">
-                  <span class="filtro-select-label">Fase</span>
-                  <select class="filtro-select" id="sel-fase" onchange="selecionarFiltro('fase', this.value)">
-                    <option value="">Todas</option>
-                  </select>
+              <!-- Filtros em chips: Fase / Linha / Unidade -->
+              <div id="filtros-selects">
+                <div class="filtro-grupo">
+                  <span class="filtro-grupo-label">Fase</span>
+                  <div class="chips-filtro" id="chips-fase"></div>
                 </div>
-                <div class="filtro-select-wrap">
-                  <span class="filtro-select-label">Linha</span>
-                  <select class="filtro-select" id="sel-linha" onchange="selecionarFiltro('linha', this.value)">
-                    <option value="">Todas</option>
-                  </select>
+                <div class="filtro-grupo" id="filtro-linha-wrap" style="display:none">
+                  <span class="filtro-grupo-label">Linha</span>
+                  <div class="chips-filtro" id="chips-linha"></div>
                 </div>
-                <div class="filtro-select-wrap">
-                  <span class="filtro-select-label">Unidade</span>
-                  <select class="filtro-select" id="sel-unid" onchange="selecionarFiltro('unidade', this.value)">
-                    <option value="">Todas</option>
-                  </select>
+                <div class="filtro-grupo">
+                  <span class="filtro-grupo-label">Unidade</span>
+                  <div class="chips-filtro" id="chips-unid"></div>
                 </div>
               </div>
 
@@ -1259,7 +1242,7 @@ async function entrar() {
   // Tenta carregar lançamentos existentes do servidor
   mostrarLoading("Carregando lançamentos anteriores...");
   try {
-    const r = await jsonp(`${API_URL}?action=getLancamentos&mes=${mes}&ano=${ano}&codVendedor=${encodeURIComponent(codV||"")}`);
+    const r = await jsonp(`${API_URL}?action=getLancamentos&mes=${mes}&ano=${ano}&codVendedor=${safeEncode(codV||"")}`);
     if (r.lancamentos && r.lancamentos.length) {
       r.lancamentos.forEach(l => {
         const cod = String(l.COD_CLIENTE);
@@ -1368,32 +1351,45 @@ function montarFiltrosSelects() {
   const linhas = [...new Set(_prodCache.map(p => p.subGrupo).filter(Boolean))].sort();
   const unids  = [...new Set(_prodCache.map(p => p.unidade).filter(Boolean))].sort();
 
-  const UNID_LABEL = { SC: "SC — Saco 25 kg", KG: "KG — Granel 1 kg", BG: "BG — Bag 750 kg" };
+  const UNID_LABEL = { SC: "SC · 25 kg", KG: "KG · 1 kg", BG: "BG · 750 kg" };
 
-  function popular(selId, valores, labelFn) {
-    const sel = document.getElementById(selId);
-    if (!sel) return;
-    sel.innerHTML = '<option value="">Todos</option>';
-    valores.forEach(v => {
-      const op = document.createElement("option");
-      op.value       = v;
-      op.textContent = labelFn ? (labelFn[v] || v) : v;
-      sel.appendChild(op);
-    });
+  _montarChips("chips-fase",  [""].concat(fases),  "fase",     v => v || "Todos",  null);
+
+  const linhaWrap = document.getElementById("filtro-linha-wrap");
+  if (linhas.length > 0) {
+    linhaWrap.style.display = "block";
+    _montarChips("chips-linha", [""].concat(linhas), "linha",  v => v || "Todas",  null);
   }
 
-  popular("sel-fase",  fases,  null);
-  popular("sel-linha", linhas, null);
-  popular("sel-unid",  unids,  UNID_LABEL);
+  _montarChips("chips-unid",  [""].concat(unids),   "unidade", v => v ? (UNID_LABEL[v.toUpperCase()] || v) : "Todas",
+    v => v ? "fchip-" + v.toUpperCase() : null);
 }
 
-function selecionarFiltro(campo, valor) {
+function _montarChips(containerId, valores, campo, labelFn, extraClassFn) {
+  const wrap = document.getElementById(containerId);
+  if (!wrap) return;
+  wrap.innerHTML = "";
+  valores.forEach(v => {
+    const ch = document.createElement("button");
+    const extra = extraClassFn ? extraClassFn(v) : null;
+    ch.className = "fchip" + (v === _filtros[campo] ? " ativo" : "") + (extra ? " " + extra : "");
+    ch.dataset.val = v;
+    ch.textContent = labelFn(v);
+    ch.addEventListener("mousedown", e => { e.preventDefault(); selecionarFiltro(campo, v, wrap); });
+    ch.addEventListener("touchstart", e => { e.preventDefault(); selecionarFiltro(campo, v, wrap); }, {passive:false});
+    wrap.appendChild(ch);
+  });
+}
+
+function selecionarFiltro(campo, valor, wrap) {
   _filtros[campo] = valor;
   _dropFocusIdx   = -1;
-  // Destaque visual no select quando há filtro ativo
-  const selMap = { fase: "sel-fase", linha: "sel-linha", unidade: "sel-unid" };
-  const sel = document.getElementById(selMap[campo]);
-  if (sel) sel.classList.toggle("ativo", valor !== "");
+  // Atualiza destaque nos chips do grupo
+  if (wrap) {
+    wrap.querySelectorAll(".fchip").forEach(c =>
+      c.classList.toggle("ativo", c.dataset.val === valor)
+    );
+  }
   filtrarProdutos();
   abrirDropdown();
 }
@@ -1864,38 +1860,69 @@ function confirmarFinalizar() {
 // ════════════════════════════════════════════════
 // SALVAR NO SERVIDOR (Google Sheets)
 // ════════════════════════════════════════════════
+
+// encodeURIComponent seguro — remove caracteres inválidos antes de encodar
+function safeEncode(val) {
+  try {
+    // Remove caracteres Unicode inválidos/substitutos soltos (ex: \uFFFD, surrogates)
+    const limpo = String(val ?? "").replace(/[\uD800-\uDFFF\uFFFD]/g, "");
+    return encodeURIComponent(limpo);
+  } catch(e) {
+    // Fallback: converte para ASCII puro
+    return encodeURIComponent(String(val ?? "").replace(/[^\x20-\x7E]/g, ""));
+  }
+}
+
+// Sanitiza string: remove caracteres de controle e substitutos inválidos
+function sanitize(str) {
+  return String(str ?? "").replace(/[\uD800-\uDFFF\uFFFD\x00-\x1F\x7F]/g, "").trim();
+}
+
 async function salvarNoServidor(codCliente, nomeCliente, itens, semVenda) {
   const v = estado.vendedor || { codigo: "sem-login", nome: "Sem login" };
   mostrarLoading("Salvando no servidor...");
 
   try {
+    // Monta linhas com os nomes de coluna EXATOS da aba de lançamentos:
+    // COD_VENDEDOR | VENDEDOR | COD_CLIENTE | LOJA | CLIENTE |
+    // COD_PRODUTO  | PRODUTO  | UNIDADE | FASE | PELLET | SUB_GRUPO |
+    // PESO_LIQUIDO | QUANTIDADE | TOTAL_KG | MES | ANO | OBSERVACAO | DATA_LANCAMENTO
+    const cliente = estado.clientes[estado.clienteIdx] || {};
+
     const linhas = semVenda ? [] : itens.map(i => ({
-      codCliente,
-      nomeCliente,
-      codProduto:  i.codProduto,
-      nomeProduto: i.nomeProduto,
-      unidade:     i.unidade || i.tipo || "",
-      quantidade:  i.quantidade,
-      pesoLiquido: i.pesoLiquido,
-      totalKg:     i.totalKg,
-      fase:        i.fase     || "",
-      subGrupo:    i.subGrupo || "",
-      pellet:      i.pellet   || "",
+      COD_VENDEDOR:     sanitize(v.codigo),
+      VENDEDOR:         sanitize(v.nome),
+      COD_CLIENTE:      sanitize(codCliente),
+      LOJA:             sanitize(cliente.loja || cliente.LOJA || ""),
+      CLIENTE:          sanitize(nomeCliente),
+      COD_PRODUTO:      sanitize(i.codProduto),
+      PRODUTO:          sanitize(i.nomeProduto),
+      UNIDADE:          sanitize(i.unidade || i.tipo || ""),
+      FASE:             sanitize(i.fase     || ""),
+      PELLET:           sanitize(i.pellet   || ""),
+      SUB_GRUPO:        sanitize(i.subGrupo || ""),
+      PESO_LIQUIDO:     i.pesoLiquido,
+      QUANTIDADE:       i.quantidade,
+      TOTAL_KG:         i.totalKg,
+      MES:              estado.mes,
+      ANO:              estado.ano,
+      OBSERVACAO:       "",
+      DATA_LANCAMENTO:  new Date().toLocaleDateString("pt-BR"),
     }));
 
     const payload = {
       action:       "salvarLancamentos",
-      codVendedor:  v.codigo,
-      nomeVendedor: v.nome,
+      codVendedor:  sanitize(v.codigo),
+      nomeVendedor: sanitize(v.nome),
       mes:          estado.mes,
       ano:          estado.ano,
       semVenda:     semVenda,
       linhas:       JSON.stringify(linhas),
     };
 
-    // Monta URL com todos os parâmetros
+    // Monta URL com todos os parâmetros usando encode seguro
     const params = Object.entries(payload)
-      .map(([k,val]) => `${k}=${encodeURIComponent(val)}`).join("&");
+      .map(([k, val]) => `${k}=${safeEncode(val)}`).join("&");
     await jsonp(`${API_URL}?${params}`);
 
     // Atualiza estado local
