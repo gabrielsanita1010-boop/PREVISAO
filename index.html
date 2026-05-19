@@ -1865,21 +1865,29 @@ function confirmarFinalizar() {
 // SALVAR NO SERVIDOR (Google Sheets)
 // ════════════════════════════════════════════════
 
-// encodeURIComponent seguro — remove caracteres inválidos antes de encodar
+// encodeURIComponent seguro — remove surrogates soltos e caracteres inválidos
 function safeEncode(val) {
   try {
-    // Remove caracteres Unicode inválidos/substitutos soltos (ex: \uFFFD, surrogates)
-    const limpo = String(val ?? "").replace(/[\uD800-\uDFFF\uFFFD]/g, "");
+    const str = String(val ?? "");
+    // Remove surrogates soltos (high sem low e low sem high) e \uFFFD
+    const limpo = str
+      .replace(/[\uD800-\uDBFF](?![\uDC00-\uDFFF])/g, "") // high surrogate sem low
+      .replace(/(?<![\uD800-\uDBFF])[\uDC00-\uDFFF]/g, "") // low surrogate sem high
+      .replace(/\uFFFD/g, "");                              // replacement character
     return encodeURIComponent(limpo);
   } catch(e) {
-    // Fallback: converte para ASCII puro
+    // Fallback: mantém apenas ASCII imprimível
     return encodeURIComponent(String(val ?? "").replace(/[^\x20-\x7E]/g, ""));
   }
 }
 
 // Sanitiza string: remove caracteres de controle e substitutos inválidos
 function sanitize(str) {
-  return String(str ?? "").replace(/[\uD800-\uDFFF\uFFFD\x00-\x1F\x7F]/g, "").trim();
+  return String(str ?? "")
+    .replace(/[\uD800-\uDBFF](?![\uDC00-\uDFFF])/g, "")
+    .replace(/(?<![\uD800-\uDBFF])[\uDC00-\uDFFF]/g, "")
+    .replace(/[\uFFFD\x00-\x1F\x7F]/g, "")
+    .trim();
 }
 
 async function salvarNoServidor(codCliente, nomeCliente, loja, itens, semVenda) {
