@@ -1938,10 +1938,24 @@ async function salvarNoServidor(codCliente, nomeCliente, loja, itens, semVenda) 
       linhas:       JSON.stringify(linhas),
     };
 
-    // Monta URL com todos os parâmetros usando encode seguro
-    const params = Object.entries(payload)
-      .map(([k, val]) => `${k}=${safeEncode(val)}`).join("&");
-    await jsonp(`${API_URL}?${params}`);
+    // Envia via POST para evitar limitações de URL e erros de URI malformed
+    const postPayload = {
+      action:       "salvarLancamentos",
+      codVendedor:  sanitize(v.codigo),
+      nomeVendedor: sanitize(v.nome),
+      mes:          estado.mes,
+      ano:          estado.ano,
+      semVenda:     semVenda,
+      linhas:       linhas,
+    };
+
+    const resp = await fetch(API_URL, {
+      method: "POST",
+      mode:   "no-cors",
+      headers: { "Content-Type": "application/json" },
+      body:   JSON.stringify(postPayload),
+    });
+    // no-cors não retorna body legível, mas o Apps Script processa normalmente
 
     // Atualiza estado local
     const statusFinal = semVenda ? "sem-venda" : "ok";
