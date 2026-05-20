@@ -1084,6 +1084,112 @@ body{
 }
 .login-senha-toggle:hover { color:var(--text); }
 
+/* ══════════════════════════════════════════
+   MODAL — ESQUECEU SENHA
+══════════════════════════════════════════ */
+#modal-esqueceu {
+  display:none;
+  position:fixed;inset:0;
+  background:rgba(26,46,29,.55);
+  z-index:600;
+  align-items:center;justify-content:center;
+  padding:24px;
+}
+#modal-esqueceu.visivel { display:flex; }
+
+.esqueceu-card {
+  background:var(--surface);
+  border:1px solid var(--border2);
+  border-radius:var(--r2);
+  padding:28px 24px;
+  width:100%;max-width:360px;
+  box-shadow:var(--shadow);
+}
+.esqueceu-titulo {
+  font-size:18px;font-weight:800;
+  margin-bottom:4px;
+}
+.esqueceu-sub {
+  font-family:var(--mono);font-size:11px;
+  color:var(--muted2);margin-bottom:22px;line-height:1.5;
+}
+.esqueceu-erro {
+  display:none;
+  background:rgba(239,68,68,.1);
+  border:1px solid rgba(239,68,68,.3);
+  border-radius:var(--r);
+  padding:9px 12px;
+  font-family:var(--mono);font-size:12px;
+  color:var(--danger);
+  margin-bottom:14px;text-align:center;
+}
+.esqueceu-erro.visivel { display:block; }
+.esqueceu-ok {
+  display:none;
+  background:rgba(46,125,50,.1);
+  border:1px solid rgba(46,125,50,.3);
+  border-radius:var(--r);
+  padding:9px 12px;
+  font-family:var(--mono);font-size:12px;
+  color:var(--accent);
+  margin-bottom:14px;text-align:center;
+}
+.esqueceu-ok.visivel { display:block; }
+.esqueceu-btns { display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px; }
+.btn-esqueceu-link {
+  background:none;border:none;
+  font-family:var(--mono);font-size:11px;
+  color:var(--muted2);cursor:pointer;
+  text-decoration:underline;text-align:center;
+  margin-top:14px;display:block;width:100%;
+  padding:4px;
+}
+.btn-esqueceu-link:hover { color:var(--accent); }
+
+/* ══════════════════════════════════════════
+   TELA — TROCA DE SENHA OBRIGATÓRIA (1° ACESSO)
+══════════════════════════════════════════ */
+#tela-trocar-senha {
+  display:none;
+  position:fixed;inset:0;
+  background:var(--bg);
+  z-index:550;
+  align-items:center;justify-content:center;
+  padding:24px;
+}
+#tela-trocar-senha.visivel { display:flex; }
+
+.trocar-card {
+  background:var(--surface);
+  border:1px solid var(--border2);
+  border-radius:var(--r2);
+  padding:32px 28px;
+  width:100%;max-width:380px;
+  box-shadow:var(--shadow);
+}
+.trocar-aviso {
+  background:rgba(230,81,0,.1);
+  border:1px solid rgba(230,81,0,.35);
+  border-radius:var(--r);
+  padding:10px 14px;
+  font-family:var(--mono);font-size:12px;
+  color:var(--warn);
+  margin-bottom:20px;
+  line-height:1.5;
+  text-align:center;
+}
+.trocar-erro {
+  display:none;
+  background:rgba(239,68,68,.1);
+  border:1px solid rgba(239,68,68,.3);
+  border-radius:var(--r);
+  padding:9px 12px;
+  font-family:var(--mono);font-size:12px;
+  color:var(--danger);
+  margin-bottom:14px;text-align:center;
+}
+.trocar-erro.visivel { display:block; }
+
 /* ── FIM DO CSS ── */
 
 </style>
@@ -1120,6 +1226,90 @@ body{
     <div class="login-erro" id="login-erro">❌ E-mail ou senha incorretos.</div>
 
     <button class="btn-login" id="btn-login" onclick="fazerLogin()">Entrar</button>
+
+    <button class="btn-esqueceu-link" onclick="abrirEsqueceuSenha()">
+      Esqueceu sua senha?
+    </button>
+  </div>
+</div>
+
+<!-- ════════════════ MODAL ESQUECEU SENHA ════════════════ -->
+<div id="modal-esqueceu">
+  <div class="esqueceu-card">
+    <div class="login-logo">PREVFISH</div>
+    <div class="esqueceu-titulo">Redefinir senha</div>
+    <div class="esqueceu-sub">Informe seu e-mail e escolha uma nova senha.</div>
+
+    <div class="login-field">
+      <label class="login-label" for="esq-email">E-mail</label>
+      <input class="login-input" id="esq-email" type="email"
+        placeholder="seu@email.com" autocomplete="email"
+        onkeydown="if(event.key==='Enter') document.getElementById('esq-nova').focus()"/>
+    </div>
+
+    <div class="login-field">
+      <label class="login-label" for="esq-nova">Nova senha</label>
+      <div class="login-senha-wrap">
+        <input class="login-input" id="esq-nova" type="password"
+          placeholder="Mínimo 6 caracteres"
+          onkeydown="if(event.key==='Enter') document.getElementById('esq-confirma').focus()"/>
+        <button class="login-senha-toggle" onclick="toggleSenhaEsq('esq-nova')" tabindex="-1">👁</button>
+      </div>
+    </div>
+
+    <div class="login-field">
+      <label class="login-label" for="esq-confirma">Confirmar nova senha</label>
+      <div class="login-senha-wrap">
+        <input class="login-input" id="esq-confirma" type="password"
+          placeholder="Repita a senha"
+          onkeydown="if(event.key==='Enter') salvarEsqueceuSenha()"/>
+        <button class="login-senha-toggle" onclick="toggleSenhaEsq('esq-confirma')" tabindex="-1">👁</button>
+      </div>
+    </div>
+
+    <div class="esqueceu-erro" id="esq-erro"></div>
+    <div class="esqueceu-ok" id="esq-ok">✅ Senha alterada com sucesso! Faça login com a nova senha.</div>
+
+    <div class="esqueceu-btns">
+      <button class="btn-cancel" onclick="fecharEsqueceuSenha()">Cancelar</button>
+      <button class="btn-confirm" onclick="salvarEsqueceuSenha()">Salvar senha</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════ TELA TROCA DE SENHA (1° ACESSO) ════════════════ -->
+<div id="tela-trocar-senha">
+  <div class="trocar-card">
+    <div class="login-logo">PREVFISH</div>
+    <div class="login-title">Crie sua senha</div>
+
+    <div class="trocar-aviso">
+      🔐 Este é seu primeiro acesso. Por segurança, crie uma senha pessoal antes de continuar.
+    </div>
+
+    <div class="login-field">
+      <label class="login-label" for="troca-nova">Nova senha</label>
+      <div class="login-senha-wrap">
+        <input class="login-input" id="troca-nova" type="password"
+          placeholder="Mínimo 6 caracteres"
+          onkeydown="if(event.key==='Enter') document.getElementById('troca-confirma').focus()"/>
+        <button class="login-senha-toggle" onclick="toggleSenhaEsq('troca-nova')" tabindex="-1">👁</button>
+      </div>
+    </div>
+
+    <div class="login-field">
+      <label class="login-label" for="troca-confirma">Confirmar senha</label>
+      <div class="login-senha-wrap">
+        <input class="login-input" id="troca-confirma" type="password"
+          placeholder="Repita a senha"
+          onkeydown="if(event.key==='Enter') salvarTrocaSenha()"/>
+        <button class="login-senha-toggle" onclick="toggleSenhaEsq('troca-confirma')" tabindex="-1">👁</button>
+      </div>
+    </div>
+
+    <div class="trocar-erro" id="troca-erro"></div>
+
+    <button class="btn-login" onclick="salvarTrocaSenha()">Confirmar e entrar</button>
   </div>
 </div>
 
@@ -1582,12 +1772,29 @@ async function fazerLogin() {
     }
 
     // Login OK — monta objeto do vendedor
-    estado.vendedor = {
+    const objVendedor = {
       codigo:      String(vendedor.codigo || vendedor.CODIGO || vendedor.COD_VENDEDOR || ""),
       nome:        String(vendedor.nome   || vendedor.NOME   || vendedor.VENDEDOR     || ""),
       nomeReduzido:String(vendedor.nomeReduzido || vendedor.NOME_REDUZIDO || vendedor.nome || vendedor.NOME || ""),
       email:       email,
     };
+
+    // Verifica 1° acesso — campo primeiroAcesso (boolean ou string "true")
+    const isPrimeiroAcesso =
+      vendedor.primeiroAcesso === true ||
+      String(vendedor.primeiroAcesso || vendedor.PRIMEIRO_ACESSO || "").toLowerCase() === "true";
+
+    if (isPrimeiroAcesso) {
+      // Bloqueia e exige troca de senha antes de entrar
+      esconderLoading();
+      btnEl.disabled  = false;
+      btnEl.textContent = "Entrar";
+      estado.vendedor = objVendedor;
+      abrirTrocaSenha(objVendedor);
+      return;
+    }
+
+    estado.vendedor = objVendedor;
 
     // Persiste sessão
     localStorage.setItem("pf_sessao", JSON.stringify(estado.vendedor));
@@ -1612,6 +1819,143 @@ async function fazerLogin() {
 function toggleSenha() {
   const inp = document.getElementById("login-senha");
   inp.type = inp.type === "password" ? "text" : "password";
+}
+
+function toggleSenhaEsq(id) {
+  const inp = document.getElementById(id);
+  if (inp) inp.type = inp.type === "password" ? "text" : "password";
+}
+
+// ════════════════════════════════════════════════
+// ESQUECEU SUA SENHA
+// ════════════════════════════════════════════════
+function abrirEsqueceuSenha() {
+  document.getElementById("esq-email").value   = "";
+  document.getElementById("esq-nova").value    = "";
+  document.getElementById("esq-confirma").value= "";
+  document.getElementById("esq-erro").classList.remove("visivel");
+  document.getElementById("esq-ok").classList.remove("visivel");
+  document.getElementById("modal-esqueceu").classList.add("visivel");
+  setTimeout(() => document.getElementById("esq-email").focus(), 100);
+}
+
+function fecharEsqueceuSenha() {
+  document.getElementById("modal-esqueceu").classList.remove("visivel");
+}
+
+function salvarEsqueceuSenha() {
+  const erroEl = document.getElementById("esq-erro");
+  const okEl   = document.getElementById("esq-ok");
+  erroEl.classList.remove("visivel");
+  okEl.classList.remove("visivel");
+
+  const email    = (document.getElementById("esq-email").value    || "").trim().toLowerCase();
+  const nova     = (document.getElementById("esq-nova").value     || "").trim();
+  const confirma = (document.getElementById("esq-confirma").value || "").trim();
+
+  if (!email) {
+    erroEl.textContent = "❌ Informe seu e-mail.";
+    erroEl.classList.add("visivel"); return;
+  }
+  const vendedor = (estado._todosVendedores || []).find(v =>
+    String(v.email || v.EMAIL || "").toLowerCase() === email
+  );
+  if (!vendedor) {
+    erroEl.textContent = "❌ E-mail não encontrado.";
+    erroEl.classList.add("visivel"); return;
+  }
+  if (nova.length < 6) {
+    erroEl.textContent = "❌ A senha deve ter no mínimo 6 caracteres.";
+    erroEl.classList.add("visivel"); return;
+  }
+  if (nova !== confirma) {
+    erroEl.textContent = "❌ As senhas não coincidem.";
+    erroEl.classList.add("visivel"); return;
+  }
+
+  // Atualiza a senha na memória local
+  vendedor.senha = nova;
+  if (vendedor.SENHA !== undefined) vendedor.SENHA = nova;
+
+  // Salva no servidor via POST
+  fetch(API_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      action:    "alterarSenha",
+      email:     email,
+      novaSenha: nova,
+    }),
+  }).catch(() => {});
+
+  okEl.classList.add("visivel");
+  document.getElementById("esq-nova").value    = "";
+  document.getElementById("esq-confirma").value= "";
+  setTimeout(() => fecharEsqueceuSenha(), 2200);
+}
+
+// ════════════════════════════════════════════════
+// TROCA DE SENHA OBRIGATÓRIA — 1° ACESSO
+// ════════════════════════════════════════════════
+// Vendedor temporário salvo durante o fluxo de troca
+let _vendedorPendente = null;
+
+function abrirTrocaSenha(vendedorObj) {
+  _vendedorPendente = vendedorObj;
+  document.getElementById("troca-nova").value    = "";
+  document.getElementById("troca-confirma").value= "";
+  document.getElementById("troca-erro").classList.remove("visivel");
+  document.getElementById("tela-login").classList.remove("visivel");
+  document.getElementById("tela-trocar-senha").classList.add("visivel");
+  setTimeout(() => document.getElementById("troca-nova").focus(), 100);
+}
+
+async function salvarTrocaSenha() {
+  const erroEl   = document.getElementById("troca-erro");
+  erroEl.classList.remove("visivel");
+
+  const nova     = (document.getElementById("troca-nova").value    || "").trim();
+  const confirma = (document.getElementById("troca-confirma").value|| "").trim();
+
+  if (nova.length < 6) {
+    erroEl.textContent = "❌ A senha deve ter no mínimo 6 caracteres.";
+    erroEl.classList.add("visivel"); return;
+  }
+  if (nova !== confirma) {
+    erroEl.textContent = "❌ As senhas não coincidem.";
+    erroEl.classList.add("visivel"); return;
+  }
+
+  // Atualiza a senha e marca primeiroAcesso = false na memória
+  const vendedor = (estado._todosVendedores || []).find(v =>
+    String(v.email || v.EMAIL || "").toLowerCase() === (_vendedorPendente?.email || "")
+  );
+  if (vendedor) {
+    vendedor.senha        = nova;
+    if (vendedor.SENHA !== undefined) vendedor.SENHA = nova;
+    vendedor.primeiroAcesso = false;
+  }
+
+  // Salva no servidor
+  fetch(API_URL, {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      action:         "alterarSenha",
+      email:          _vendedorPendente?.email,
+      novaSenha:      nova,
+      primeiroAcesso: false,
+    }),
+  }).catch(() => {});
+
+  // Persiste sessão e entra no app
+  localStorage.setItem("pf_sessao", JSON.stringify(_vendedorPendente));
+  document.getElementById("tela-trocar-senha").classList.remove("visivel");
+  esconderLoading();
+  toast("✅ Senha criada com sucesso! Bem-vindo(a).");
+  await entrar();
 }
 
 // ════════════════════════════════════════════════
