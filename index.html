@@ -11,26 +11,26 @@
    VARIÁVEIS E RESET
 ══════════════════════════════════════════ */
 :root {
-  --bg:        #0d1f16;
-  --surface:   #104025;
-  --card:      #163320;
-  --card2:     #1a3d26;
-  --border:    #1e4a2e;
-  --border2:   #245c38;
-  --accent:    #97BF3F;
-  --accent-dim:#7aa832;
-  --accent2:   #BFD989;
-  --blue:      #97BF3F;
-  --warn:      #f59e0b;
-  --danger:    #ef4444;
-  --text:      #F2F2F2;
-  --muted:     #4a7a58;
-  --muted2:    #7aaa8a;
+  --bg:        #f0f4f1;
+  --surface:   #ffffff;
+  --card:      #f7faf8;
+  --card2:     #eef5f0;
+  --border:    #d4e3d9;
+  --border2:   #b8d4c0;
+  --accent:    #2e7d32;
+  --accent-dim:#1b5e20;
+  --accent2:   #4caf50;
+  --blue:      #2e7d32;
+  --warn:      #e65100;
+  --danger:    #c62828;
+  --text:      #1a2e1d;
+  --muted:     #7a9e82;
+  --muted2:    #4d7a58;
   --mono:      'Roboto Mono', monospace;
   --sans:      'Roboto', sans-serif;
   --r:         10px;
   --r2:        16px;
-  --shadow:    0 4px 24px rgba(0,0,0,.5);
+  --shadow:    0 4px 24px rgba(0,0,0,.10);
 }
 
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -49,7 +49,7 @@ body{
 ══════════════════════════════════════════ */
 #loading{
   position:fixed;inset:0;
-  background:rgba(10,13,18,.96);
+  background:rgba(240,244,241,.96);
   display:flex;flex-direction:column;
   align-items:center;justify-content:center;
   z-index:9999;gap:14px;
@@ -194,38 +194,43 @@ body{
   display:grid;
   grid-template-columns:1fr;
   gap:0;
-  max-width:1400px;
-  margin:0 auto;
+  width:100%;
 }
 @media(min-width:860px){
   .app-layout{
-    grid-template-columns:1fr 320px;
+    grid-template-columns:260px 1fr;
     align-items:start;
   }
 }
-@media(min-width:1200px){
+@media(min-width:1100px){
   .app-layout{
-    grid-template-columns:1fr 400px;
+    grid-template-columns:300px 1fr;
+  }
+}
+@media(min-width:1400px){
+  .app-layout{
+    grid-template-columns:340px 1fr;
   }
 }
 
 .app-body{
-  padding:16px;
+  padding:20px 24px;
   display:flex;flex-direction:column;
-  gap:14px;
+  gap:16px;
   min-width:0;
 }
 
 /* ── PAINEL LATERAL DE CLIENTES ── */
 .painel-clientes{
-  padding:16px 16px 16px 0;
+  padding:12px 14px;
   position:sticky;
   top:0;
-  height:100vh;
+  max-height:100vh;
   overflow-y:auto;
-  display:none; /* oculto em mobile */
-  border-left:1px solid var(--border);
+  display:none;
+  border-right:1px solid var(--border);
   background:var(--surface);
+  align-self:start;
 }
 @media(min-width:860px){
   .painel-clientes{display:block}
@@ -300,7 +305,7 @@ body{
 /* Drawer mobile do painel */
 .drawer-overlay{
   position:fixed;inset:0;
-  background:rgba(10,13,18,.8);
+  background:rgba(26,46,29,.5);
   z-index:200;
   display:none;
 }
@@ -359,7 +364,7 @@ body{
   letter-spacing:.3px;
   color:var(--text);
 }
-.secao-body{padding:14px 16px}
+.secao-body{padding:16px 18px}
 
 /* ══════════════════════════════════════════
    SEÇÃO 1 — CLIENTE ATUAL
@@ -368,8 +373,8 @@ body{
   background:var(--card);
   border:1px solid var(--border2);
   border-radius:var(--r);
-  padding:12px 14px;
-  margin-bottom:12px;
+  padding:14px 16px;
+  margin-bottom:14px;
 }
 .cliente-label{
   font-family:var(--mono);font-size:10px;
@@ -394,7 +399,7 @@ body{
   border:1px solid;
 }
 .status-pendente{color:var(--warn);border-color:rgba(245,158,11,.3);background:rgba(245,158,11,.08)}
-.status-ok{color:var(--accent);border-color:rgba(0,229,160,.3);background:rgba(0,229,160,.08)}
+.status-ok{color:#1b5e20;border-color:rgba(27,94,32,.3);background:rgba(27,94,32,.08)}
 .status-sem-venda{color:var(--muted2);border-color:var(--border2);background:var(--card2)}
 .status-rascunho{color:#97BF3F;border-color:rgba(151,191,63,.4);background:rgba(151,191,63,.1)}
 
@@ -433,8 +438,8 @@ body{
 .form-grid{
   display:grid;
   grid-template-columns:1fr 1fr;
-  gap:10px;
-  margin-bottom:10px;
+  gap:12px;
+  margin-bottom:12px;
 }
 @media(max-width:420px){
   .form-grid{grid-template-columns:1fr}
@@ -472,16 +477,16 @@ body{
 .form-acoes{
   display:grid;
   grid-template-columns:1fr auto;
-  gap:8px;margin-top:10px;
+  gap:10px;margin-top:12px;
 }
 .btn-add{
-  background:#97BF3F;color:#fff;
+  background:var(--accent);color:#fff;
   border:none;border-radius:var(--r);
   padding:11px 16px;
   font-size:14px;font-weight:700;font-family:var(--sans);
   cursor:pointer;transition:all .2s;
 }
-.btn-add:hover{background:#7aa832}
+.btn-add:hover{background:var(--accent-dim)}
 .btn-add:active{transform:scale(.98)}
 .btn-limpar{
   background:var(--card);
@@ -527,8 +532,8 @@ body{
 .filtros-selects{
   display:grid;
   grid-template-columns:repeat(3,1fr);
-  gap:8px;
-  margin-top:8px;
+  gap:10px;
+  margin-top:10px;
 }
 @media(max-width:400px){
   .filtros-selects{grid-template-columns:1fr}
@@ -604,8 +609,8 @@ body{
 .prod-selecionado-chip{
   display:none;
   align-items:center;gap:8px;
-  background:rgba(33,150,243,.1);
-  border:1px solid rgba(33,150,243,.3);
+  background:rgba(46,125,50,.08);
+  border:1px solid rgba(46,125,50,.25);
   border-radius:var(--r);
   padding:8px 12px;
   margin-top:7px;
@@ -651,13 +656,13 @@ body{
   background:var(--card);
   border:1px solid var(--border2);
   border-radius:var(--r);
-  padding:11px 12px;
-  margin-bottom:8px;
+  padding:13px 14px;
+  margin-bottom:10px;
   transition:border-color .2s;
   position:relative;
 }
 .item-card:last-child{margin-bottom:0}
-.item-card.editando{border-color:var(--blue)}
+.item-card.editando{border-color:var(--accent)}
 .item-card-header{
   display:flex;align-items:flex-start;justify-content:space-between;
   gap:8px;margin-bottom:5px;
@@ -670,9 +675,9 @@ body{
   border:1px solid;
   white-space:nowrap;
 }
-.badge-saco{color:#a78bfa;border-color:rgba(167,139,250,.3);background:rgba(167,139,250,.08)}
-.badge-granel{color:#34d399;border-color:rgba(52,211,153,.3);background:rgba(52,211,153,.08)}
-.badge-bag{color:#fb923c;border-color:rgba(251,146,60,.3);background:rgba(251,146,60,.08)}
+.badge-saco{color:#5e35b1;border-color:rgba(94,53,177,.3);background:rgba(94,53,177,.08)}
+.badge-granel{color:#00695c;border-color:rgba(0,105,92,.3);background:rgba(0,105,92,.08)}
+.badge-bag{color:#bf360c;border-color:rgba(191,54,12,.3);background:rgba(191,54,12,.08)}
 .item-meta{
   display:flex;gap:12px;
   font-family:var(--mono);font-size:11px;
@@ -709,8 +714,8 @@ body{
 
 .lista-total{
   display:flex;align-items:center;justify-content:space-between;
-  margin-top:10px;
-  padding:10px 12px;
+  margin-top:12px;
+  padding:12px 14px;
   background:var(--card2);
   border:1px solid var(--border2);
   border-radius:var(--r);
@@ -731,7 +736,7 @@ body{
 .acoes-grid{
   display:grid;
   grid-template-columns:1fr 1fr;
-  gap:10px;
+  gap:12px;
 }
 @media(max-width:340px){
   .acoes-grid{grid-template-columns:1fr}
@@ -748,14 +753,14 @@ body{
 }
 .btn-sem-venda:hover{border-color:var(--warn);color:var(--warn)}
 .btn-finalizar{
-  background:linear-gradient(135deg,#97BF3F,#7aa832);
-  color:#000;border:none;
+  background:var(--accent);
+  color:#fff;border:none;
   border-radius:var(--r);padding:13px;
   font-size:14px;font-weight:800;font-family:var(--sans);
   cursor:pointer;transition:all .2s;
   text-align:center;
 }
-.btn-finalizar:hover{opacity:.88}
+.btn-finalizar:hover{background:var(--accent-dim)}
 .btn-finalizar:active{transform:scale(.98)}
 
 /* ══════════════════════════════════════════
@@ -763,7 +768,7 @@ body{
 ══════════════════════════════════════════ */
 .modal-overlay{
   position:fixed;inset:0;
-  background:rgba(10,13,18,.85);
+  background:rgba(26,46,29,.5);
   display:flex;align-items:flex-end;justify-content:center;
   z-index:300;
   opacity:0;pointer-events:none;
@@ -810,8 +815,8 @@ body{
 ══════════════════════════════════════════ */
 .editing-chip{
   display:inline-flex;align-items:center;gap:6px;
-  background:rgba(33,150,243,.12);
-  border:1px solid rgba(33,150,243,.3);
+  background:rgba(46,125,50,.1);
+  border:1px solid rgba(46,125,50,.3);
   color:var(--blue);
   border-radius:20px;
   padding:4px 10px;
@@ -846,16 +851,141 @@ body{
 .item-card{animation:fadeIn .2s ease}
 
 /* ══════════════════════════════════════════
-   RESPONSIVO MAIOR
+   RESPONSIVO — TABLET / DESKTOP
 ══════════════════════════════════════════ */
 @media(min-width:600px){
-  .app-body{padding:20px 24px}
   .acoes-grid{grid-template-columns:auto 1fr}
   .btn-sem-venda{white-space:nowrap}
 }
+
+/* ══════════════════════════════════════════
+   MOBILE — ajustes específicos
+══════════════════════════════════════════ */
+@media(max-width:599px){
+
+  /* Header mais compacto */
+  .header-top{padding:8px 12px;gap:6px}
+  .header-logo{font-size:11px;letter-spacing:1.5px}
+  .header-vendedor{max-width:90px;font-size:10px}
+
+  /* Stats bar compacta */
+  .header-stats{padding:6px 12px}
+  .hstat{padding:0 8px}
+  .hstat-val{font-size:13px}
+  .hstat-lbl{font-size:8px}
+  .hstat-prog{min-width:90px;padding:0 8px}
+
+  /* Body e seções */
+  .app-body{padding:12px;gap:12px}
+  .secao-body{padding:12px 14px}
+  .secao-header{padding:10px 14px 8px}
+
+  /* Cliente display */
+  .cliente-display{padding:12px;margin-bottom:12px}
+  .cliente-nome{font-size:16px}
+
+  /* Navegação ← select → */
+  .nav-clientes{gap:6px}
+  .btn-nav{padding:9px 12px;font-size:15px}
+  .nav-sel{padding:9px 8px;font-size:12px}
+
+  /* Formulário */
+  .form-grid{gap:10px;margin-bottom:10px}
+  .filtros-selects{gap:8px;margin-top:8px}
+  .filtro-select{padding:6px 6px;font-size:11px}
+  .form-acoes{grid-template-columns:1fr;gap:8px;margin-top:10px}
+  .btn-limpar{padding:10px;font-size:13px}
+  .btn-add{padding:13px;font-size:14px}
+
+  /* Itens lançados */
+  .item-card{padding:11px 12px;margin-bottom:8px}
+  .item-nome{font-size:13px}
+  .item-meta{font-size:10px;gap:8px}
+  .item-acoes{gap:6px;margin-top:8px}
+  .btn-edit{padding:7px 0;font-size:11px}
+  .btn-del{padding:7px 10px;font-size:11px}
+  .lista-total{padding:10px 12px;margin-top:10px}
+
+  /* Ações do cliente: empilhados no mobile */
+  .acoes-grid{grid-template-columns:1fr;gap:8px}
+  .btn-sem-venda{padding:12px;font-size:13px}
+  .btn-finalizar{padding:14px;font-size:14px}
+
+  /* Botão lista de clientes */
+  .btn-lista-clientes{padding:10px 12px;font-size:12px;margin-bottom:12px}
+
+  /* Seção concluir */
+  .salvar-final-info{gap:8px}
+  .sf-stat{padding:8px 6px;min-width:60px}
+  .sf-stat-val{font-size:17px}
+  .sf-stat-lbl{font-size:8px}
+  .btn-salvar-final{padding:14px;font-size:14px}
+
+  /* Botão relatório: só ícone */
+  .btn-relatorio-txt{display:none}
+  #btn-pdf{padding:6px 10px}
+}
+
+/* ══════════════════════════════════════════
+   SEÇÃO SALVAR TUDO NO FINAL
+══════════════════════════════════════════ */
+.secao-salvar-final{
+  border:2px solid var(--border2);
+  background:var(--surface);
+}
+.secao-salvar-final.pronto{
+  border-color:var(--accent);
+  background:rgba(46,125,50,.04);
+}
+.btn-salvar-final{
+  width:100%;
+  background:var(--accent);
+  color:#fff;border:none;
+  border-radius:var(--r);padding:15px;
+  font-size:15px;font-weight:800;font-family:var(--sans);
+  cursor:pointer;transition:all .2s;
+  margin-bottom:8px;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.btn-salvar-final:hover{background:var(--accent-dim)}
+.btn-salvar-final:active{transform:scale(.98)}
+.btn-salvar-final:disabled{
+  opacity:.4;cursor:not-allowed;
+  background:var(--muted);
+}
+.salvar-final-hint{
+  font-family:var(--mono);font-size:11px;
+  color:var(--muted2);text-align:center;
+}
+.salvar-final-info{
+  display:flex;gap:10px;flex-wrap:wrap;
+  margin-bottom:14px;
+}
+.sf-stat{
+  flex:1;min-width:80px;
+  background:var(--card2);
+  border:1px solid var(--border2);
+  border-radius:var(--r);
+  padding:10px 12px;
+  text-align:center;
+}
+.sf-stat-val{
+  font-family:var(--mono);font-size:20px;font-weight:700;
+  color:var(--accent);line-height:1.2;
+}
+.sf-stat-val.warn{color:var(--warn)}
+.sf-stat-val.muted{color:var(--muted2)}
+.sf-stat-lbl{
+  font-family:var(--mono);font-size:9px;
+  text-transform:uppercase;letter-spacing:.8px;
+  color:var(--muted2);margin-top:2px;
+}
 /* ── PDF EXPORT BUTTON ── */
-#btn-pdf{background:#97BF3F;color:#fff;border-color:#7aa832;font-weight:700}
-#btn-pdf:hover{background:#7aa832;color:#fff}
+#btn-pdf{background:var(--accent);color:#fff;border-color:var(--accent-dim);font-weight:700;padding:6px 14px}
+#btn-pdf:hover{background:var(--accent-dim);border-color:var(--accent-dim);color:#fff}
+.btn-relatorio{display:flex;align-items:center;gap:6px}
+.btn-relatorio-txt{font-size:12px;font-family:var(--mono);font-weight:700;white-space:nowrap}
+@media(max-width:380px){.btn-relatorio-txt{display:none}}
 
 
 /* ══════════════════════════════════════════
@@ -932,14 +1062,14 @@ body{
 
 .btn-login {
   width:100%;
-  background:linear-gradient(135deg,#97BF3F,#7aa832);
-  color:#000;border:none;
+  background:var(--accent);
+  color:#fff;border:none;
   border-radius:var(--r);padding:13px;
   font-size:15px;font-weight:800;font-family:var(--sans);
   cursor:pointer;transition:all .2s;
   margin-top:4px;
 }
-.btn-login:hover { opacity:.88; }
+.btn-login:hover { background:var(--accent-dim); }
 .btn-login:active { transform:scale(.98); }
 .btn-login:disabled { opacity:.5;cursor:not-allowed; }
 
@@ -954,13 +1084,7 @@ body{
 }
 .login-senha-toggle:hover { color:var(--text); }
 
-/* ── PAINEL LATERAL FULL HEIGHT ── */
-@media(min-width:860px){
-  .painel-clientes{
-    height:calc(100vh - var(--header-h, 90px));
-    max-height:none;
-  }
-}
+/* ── FIM DO CSS ── */
 
 </style>
 </head>
@@ -1032,7 +1156,10 @@ body{
         <span class="header-vendedor" id="hdr-vendedor">—</span>
 
       </div>
-      <button class="btn-icon" onclick="exportarPDF()" title="Exportar PDF" id="btn-pdf">📄</button>
+      <button class="btn-icon btn-relatorio" onclick="exportarPDF()" title="Gerar Relatório PDF" id="btn-pdf">
+        <span class="btn-relatorio-icon">📄</span>
+        <span class="btn-relatorio-txt">Relatório</span>
+      </button>
       <button class="btn-icon" onclick="sair()" title="Sair">⏏</button>
     </div>
     <!-- Stats bar: progresso + totais por fase/unidade -->
@@ -1070,7 +1197,16 @@ body{
   <!-- CORPO -->
   <div class="app-layout">
 
-  <!-- COLUNA PRINCIPAL -->
+  <!-- PAINEL LATERAL DE CLIENTES (desktop) — esquerda -->
+  <div class="painel-clientes">
+    <div class="painel-titulo">
+      Clientes
+      <span id="painel-pendentes">0 pendentes</span>
+    </div>
+    <div id="painel-lista"></div>
+  </div>
+
+  <!-- COLUNA PRINCIPAL — direita -->
   <div class="app-body">
 
     <!-- Botão mobile para ver lista de clientes -->
@@ -1164,6 +1300,8 @@ body{
                   </select>
                 </div>
 
+              </div><!-- /filtros-selects -->
+
               <!-- Produto selecionado (chip) -->
               <div class="prod-selecionado-chip" id="prod-chip">
                 <div style="flex:1;min-width:0">
@@ -1243,7 +1381,7 @@ body{
     <div class="secao">
       <div class="secao-header">
         <div class="secao-num">4</div>
-        <div class="secao-titulo">Finalizar cliente</div>
+        <div class="secao-titulo">Confirmar cliente</div>
       </div>
       <div class="secao-body">
         <div class="acoes-grid">
@@ -1251,22 +1389,26 @@ body{
             🚫 Sem venda
           </button>
           <button class="btn-finalizar" onclick="confirmarFinalizar()">
-            ✅ Finalizar e salvar
+            ✅ Confirmar cliente
           </button>
         </div>
       </div>
     </div>
 
-  </div><!-- /app-body -->
-
-  <!-- PAINEL LATERAL DE CLIENTES (desktop) -->
-  <div class="painel-clientes">
-    <div class="painel-titulo">
-      Clientes
-      <span id="painel-pendentes">0 pendentes</span>
+    <!-- ══ SEÇÃO 5 — SALVAR TUDO NA NUVEM ══ -->
+    <div class="secao secao-salvar-final" id="secao-salvar-final">
+      <div class="secao-body" style="padding:16px">
+        <div class="salvar-final-info" id="salvar-final-info">
+          <!-- preenchido dinamicamente -->
+        </div>
+        <button class="btn-salvar-final" id="btn-salvar-final" onclick="salvarTudoFinal()" disabled>
+          ☁️ Concluir previsão de vendas
+        </button>
+        <p class="salvar-final-hint">Registre todos os lançamentos de uma vez ao terminar.</p>
+      </div>
     </div>
-    <div id="painel-lista"></div>
-  </div>
+
+  </div><!-- /app-body -->
 
   </div><!-- /app-layout -->
 </div><!-- /app -->
@@ -1282,6 +1424,16 @@ body{
 </div>
 
 <script>
+// ════════════════════════════════════════════════
+// ALTURA DO HEADER → variável CSS --header-h
+// ════════════════════════════════════════════════
+function atualizarHeaderH() {
+  const h = document.querySelector(".app-header");
+  if (h) document.documentElement.style.setProperty("--header-h", h.offsetHeight + "px");
+}
+window.addEventListener("resize", atualizarHeaderH);
+document.addEventListener("DOMContentLoaded", () => setTimeout(atualizarHeaderH, 100));
+
 // ════════════════════════════════════════════════
 // CONFIGURAÇÃO DA API
 // ════════════════════════════════════════════════
@@ -1520,6 +1672,8 @@ async function entrar() {
           observacao: l.OBSERVACAO || "",
         });
         estado.sessao[cod].totalKg = estado.sessao[cod].itens.reduce((s,i)=>s+i.totalKg,0);
+        // Marca como "ok" apenas em memória (já estava salvo no servidor)
+        estado.sessao[cod]._jaEnviado = true;
       });
     }
   } catch(e) {
@@ -1531,6 +1685,8 @@ async function entrar() {
   atualizarClienteAtual();
   atualizarHeader();
   atualizarResumo();
+  atualizarSalvarFinal();
+  setTimeout(atualizarHeaderH, 50);
   esconderLoading();
 }
 
@@ -2112,7 +2268,7 @@ function limparFormulario() {
 }
 
 // ════════════════════════════════════════════════
-// REGISTRAR SEM VENDA
+// REGISTRAR SEM VENDA (salva só localmente)
 // ════════════════════════════════════════════════
 function registrarSemVenda() {
   const c = estado.clientes[estado.clienteIdx];
@@ -2120,16 +2276,31 @@ function registrarSemVenda() {
 
   abrirModal(
     "Registrar sem venda?",
-    `Confirmar que <strong>${c.nomeCliente}</strong> não realizou compras neste mês?`,
+    `Confirmar que <strong>${c.nomeCliente}</strong> não realizou compras neste mês?<br><small style="color:var(--muted2)">O registro ficará salvo localmente até você clicar em "Salvar tudo na nuvem".</small>`,
     () => {
-      // Salva status no servidor
-      salvarNoServidor(c.codCliente, c.nomeCliente, c.loja || "", [], true);
+      const cod = c.codCliente;
+      estado.sessao[cod] = { status: "sem-venda", itens: [], totalKg: 0 };
+      limparRascunho(cod);
+      estado.itensCliente = [];
+
+      toast("🚫 Sem venda registrado localmente.");
+      atualizarResumo();
+      atualizarSalvarFinal();
+
+      setTimeout(() => {
+        if (estado.clienteIdx < estado.clientes.length - 1) {
+          irCliente(1);
+        } else {
+          atualizarClienteAtual();
+          toast("🎉 Todos os clientes foram confirmados! Clique em 'Salvar tudo na nuvem'.");
+        }
+      }, 700);
     }
   );
 }
 
 // ════════════════════════════════════════════════
-// CONFIRMAR FINALIZAR CLIENTE (com itens)
+// CONFIRMAR CLIENTE (salva só localmente, sem enviar)
 // ════════════════════════════════════════════════
 function confirmarFinalizar() {
   const c = estado.clientes[estado.clienteIdx];
@@ -2141,9 +2312,33 @@ function confirmarFinalizar() {
 
   const totalKg = estado.itensCliente.reduce((s,i)=>s+i.totalKg, 0);
   abrirModal(
-    "Finalizar cliente?",
-    `Salvar ${estado.itensCliente.length} item(s) para <strong>${c.nomeCliente}</strong>, totalizando ${nf(totalKg)} kg?`,
-    () => salvarNoServidor(c.codCliente, c.nomeCliente, c.loja || "", estado.itensCliente, false)
+    "Confirmar cliente?",
+    `Confirmar ${estado.itensCliente.length} item(s) para <strong>${c.nomeCliente}</strong>, totalizando ${nf(totalKg)} kg?<br><small style="color:var(--muted2)">Os dados ficam salvos localmente até você clicar em "Salvar tudo na nuvem".</small>`,
+    () => {
+      // Salva apenas em memória (estado)
+      const cod = c.codCliente;
+      estado.sessao[cod] = {
+        status:  "ok",
+        itens:   [...estado.itensCliente],
+        totalKg: totalKg,
+      };
+      limparRascunho(cod);
+      estado.itensCliente = [];
+
+      toast("✅ Cliente confirmado! Continue os demais e salve tudo ao final.");
+      atualizarResumo();
+      atualizarSalvarFinal();
+
+      // Avança para o próximo cliente automaticamente
+      setTimeout(() => {
+        if (estado.clienteIdx < estado.clientes.length - 1) {
+          irCliente(1);
+        } else {
+          atualizarClienteAtual();
+          toast("🎉 Todos os clientes foram confirmados! Clique em 'Salvar tudo na nuvem'.");
+        }
+      }, 700);
+    }
   );
 }
 
@@ -2440,6 +2635,174 @@ document.getElementById("modal").addEventListener("click", e => {
 });
 
 // ════════════════════════════════════════════════
+// SALVAR TUDO NA NUVEM (envio único ao servidor)
+// ════════════════════════════════════════════════
+function atualizarSalvarFinal() {
+  const sessoes  = Object.values(estado.sessao);
+  const total    = estado.clientes.length;
+  const ok       = sessoes.filter(s => s.status === "ok").length;
+  const semVenda = sessoes.filter(s => s.status === "sem-venda").length;
+  const pendentes= sessoes.filter(s => s.status === "pendente").length;
+  const finalizados = ok + semVenda;
+
+  // Atualiza stats visuais
+  const infoEl = document.getElementById("salvar-final-info");
+  if (infoEl) {
+    infoEl.innerHTML = `
+      <div class="sf-stat">
+        <div class="sf-stat-val">${ok}</div>
+        <div class="sf-stat-lbl">Com venda</div>
+      </div>
+      <div class="sf-stat">
+        <div class="sf-stat-val warn">${semVenda}</div>
+        <div class="sf-stat-lbl">Sem venda</div>
+      </div>
+      <div class="sf-stat">
+        <div class="sf-stat-val muted">${pendentes}</div>
+        <div class="sf-stat-lbl">Pendentes</div>
+      </div>
+      <div class="sf-stat">
+        <div class="sf-stat-val">${total}</div>
+        <div class="sf-stat-lbl">Total</div>
+      </div>
+    `;
+  }
+
+  // Habilita o botão se há pelo menos 1 cliente confirmado
+  const btnEl = document.getElementById("btn-salvar-final");
+  const secaoEl = document.getElementById("secao-salvar-final");
+  if (btnEl) {
+    btnEl.disabled = finalizados === 0;
+    if (finalizados > 0 && pendentes === 0) {
+      btnEl.textContent = `☁️ Concluir previsão de vendas (${finalizados} clientes)`;
+      if (secaoEl) secaoEl.classList.add("pronto");
+    } else if (finalizados > 0) {
+      btnEl.textContent = `☁️ Concluir previsão de vendas (${finalizados} confirmados)`;
+      if (secaoEl) secaoEl.classList.remove("pronto");
+    } else {
+      btnEl.textContent = "☁️ Concluir previsão de vendas";
+      if (secaoEl) secaoEl.classList.remove("pronto");
+    }
+  }
+}
+
+async function salvarTudoFinal() {
+  const confirmados = estado.clientes.filter(c => {
+    const s = estado.sessao[c.codCliente];
+    return s && s.status !== "pendente";
+  });
+
+  if (confirmados.length === 0) {
+    toast("Nenhum cliente confirmado ainda.", "warn"); return;
+  }
+
+  const pendentes = estado.clientes.filter(c => {
+    const s = estado.sessao[c.codCliente];
+    return !s || s.status === "pendente";
+  });
+
+  const msgPendentes = pendentes.length > 0
+    ? `<br><small style="color:var(--warn)">⚠️ ${pendentes.length} cliente(s) ainda pendentes não serão enviados.</small>`
+    : "";
+
+  abrirModal(
+    "Salvar tudo na nuvem?",
+    `Enviar os lançamentos de <strong>${confirmados.length} cliente(s)</strong> para o servidor agora?${msgPendentes}`,
+    async () => {
+      mostrarLoading("Salvando todos os lançamentos...");
+      const v = estado.vendedor || { codigo: "sem-login", nome: "Sem login" };
+
+      const agora = new Date();
+      const dataLancamento = [
+        String(agora.getDate()).padStart(2,"0"),
+        String(agora.getMonth()+1).padStart(2,"0"),
+        agora.getFullYear()
+      ].join("/") + " " + [
+        String(agora.getHours()).padStart(2,"0"),
+        String(agora.getMinutes()).padStart(2,"0"),
+        String(agora.getSeconds()).padStart(2,"0")
+      ].join(":");
+
+      // Monta todas as linhas de uma vez
+      const todasLinhas = [];
+      confirmados.forEach(c => {
+        const sess = estado.sessao[c.codCliente];
+        if (sess.status === "sem-venda") {
+          // sem-venda: envia linha especial ou apenas sem itens
+          return;
+        }
+        (sess.itens || []).forEach(i => {
+          todasLinhas.push({
+            COD_VENDEDOR:    sanitize(v.codigo),
+            VENDEDOR:        sanitize(v.nome),
+            COD_CLIENTE:     sanitize(c.codCliente),
+            LOJA:            sanitize(c.loja || ""),
+            CLIENTE:         sanitize(c.nomeCliente),
+            COD_PRODUTO:     sanitize(i.codProduto),
+            PRODUTO:         sanitize(i.nomeProduto),
+            UNIDADE:         sanitize(i.unidade || i.tipo || ""),
+            FASE:            sanitize(i.fase     || ""),
+            PELLET:          sanitize(i.pellet   || ""),
+            SUB_GRUPO:       sanitize(i.subGrupo || ""),
+            PESO_LIQUIDO:    i.pesoLiquido,
+            QUANTIDADE:      i.quantidade,
+            TOTAL_KG:        i.totalKg,
+            MES:             estado.mes,
+            ANO:             estado.ano,
+            OBSERVACAO:      sanitize(i.observacao || ""),
+            DATA_LANCAMENTO: dataLancamento,
+          });
+        });
+      });
+
+      // Clientes sem venda (lista separada para o backend)
+      const semVendaList = confirmados
+        .filter(c => estado.sessao[c.codCliente]?.status === "sem-venda")
+        .map(c => ({
+          COD_VENDEDOR: sanitize(v.codigo),
+          COD_CLIENTE:  sanitize(c.codCliente),
+          CLIENTE:      sanitize(c.nomeCliente),
+          LOJA:         sanitize(c.loja || ""),
+          MES:          estado.mes,
+          ANO:          estado.ano,
+          DATA_LANCAMENTO: dataLancamento,
+        }));
+
+      try {
+        const postPayload = {
+          action:       "salvarLancamentos",
+          codVendedor:  sanitize(v.codigo),
+          nomeVendedor: sanitize(v.nome),
+          mes:          estado.mes,
+          ano:          estado.ano,
+          semVenda:     false,
+          linhas:       todasLinhas,
+          semVendaList: semVendaList,
+        };
+
+        await fetch(API_URL, {
+          method: "POST",
+          mode:   "no-cors",
+          headers: { "Content-Type": "application/json" },
+          body:   JSON.stringify(postPayload),
+        });
+
+        // Limpa rascunhos locais dos confirmados
+        confirmados.forEach(c => limparRascunho(c.codCliente));
+
+        esconderLoading();
+        toast(`✅ ${confirmados.length} cliente(s) salvos na nuvem com sucesso!`);
+        atualizarSalvarFinal();
+
+      } catch(e) {
+        esconderLoading();
+        toast("❌ Erro ao salvar: " + e.message, "error");
+      }
+    }
+  );
+}
+
+// ════════════════════════════════════════════════
 // FORMATAÇÃO DE NÚMEROS
 // ════════════════════════════════════════════════
 // Formata número com separador de milhares pt-BR: 1.000 / 200.000
@@ -2562,104 +2925,7 @@ function exportarPDF() {
     .resumo { margin-top: 14px; padding: 10px 12px; background: #F2F2F2; border-left: 4px solid #97BF3F; border-radius: 4px; }
     .resumo strong { color: #08592B; }
     @media print { body { margin: 10px; } }
-  
-/* ══════════════════════════════════════════
-   TELA DE LOGIN
-══════════════════════════════════════════ */
-#tela-login {
-  display:none;
-  position:fixed;inset:0;
-  background:var(--bg);
-  z-index:500;
-  align-items:center;justify-content:center;
-  padding:24px;
-}
-#tela-login.visivel { display:flex; }
-
-.login-card {
-  background:var(--surface);
-  border:1px solid var(--border2);
-  border-radius:var(--r2);
-  padding:32px 28px;
-  width:100%;max-width:380px;
-  box-shadow:var(--shadow);
-}
-.login-logo {
-  font-family:var(--mono);font-size:11px;
-  letter-spacing:2.5px;color:var(--accent);font-weight:700;
-  text-align:center;margin-bottom:6px;
-}
-.login-title {
-  font-size:22px;font-weight:800;
-  text-align:center;margin-bottom:4px;
-}
-.login-sub {
-  font-family:var(--mono);font-size:11px;
-  color:var(--muted2);text-align:center;
-  margin-bottom:28px;
-}
-.login-field {
-  margin-bottom:14px;
-}
-.login-label {
-  display:block;
-  font-family:var(--mono);font-size:10px;
-  text-transform:uppercase;letter-spacing:1px;
-  color:var(--muted2);margin-bottom:5px;
-}
-.login-input {
-  width:100%;
-  background:var(--card);
-  border:1px solid var(--border2);
-  color:var(--text);
-  border-radius:var(--r);
-  padding:11px 13px;
-  font-size:14px;font-family:var(--sans);
-  outline:none;
-  transition:border-color .2s;
-}
-.login-input:focus { border-color:var(--accent); }
-.login-input::placeholder { color:var(--muted); }
-.login-input.erro { border-color:var(--danger); }
-
-.login-erro {
-  display:none;
-  background:rgba(239,68,68,.1);
-  border:1px solid rgba(239,68,68,.3);
-  border-radius:var(--r);
-  padding:9px 12px;
-  font-family:var(--mono);font-size:12px;
-  color:var(--danger);
-  margin-bottom:14px;
-  text-align:center;
-}
-.login-erro.visivel { display:block; }
-
-.btn-login {
-  width:100%;
-  background:linear-gradient(135deg,#97BF3F,#7aa832);
-  color:#000;border:none;
-  border-radius:var(--r);padding:13px;
-  font-size:15px;font-weight:800;font-family:var(--sans);
-  cursor:pointer;transition:all .2s;
-  margin-top:4px;
-}
-.btn-login:hover { opacity:.88; }
-.btn-login:active { transform:scale(.98); }
-.btn-login:disabled { opacity:.5;cursor:not-allowed; }
-
-.login-senha-wrap {
-  position:relative;
-}
-.login-senha-toggle {
-  position:absolute;right:10px;top:50%;transform:translateY(-50%);
-  background:none;border:none;color:var(--muted2);
-  cursor:pointer;font-size:15px;padding:4px;
-  transition:color .2s;
-}
-.login-senha-toggle:hover { color:var(--text); }
-
-</style>
+  </style>
   </head><body>
   <h1>Previsão de Vendas</h1>
   <div class="sub">Vendedor: <strong>${v.nome}</strong> &nbsp;|&nbsp; Período: <strong>${mes}/${ano}</strong> &nbsp;|&nbsp; Emitido em: <strong>${new Date().toLocaleDateString('pt-BR')}</strong></div>
