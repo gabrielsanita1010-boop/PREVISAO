@@ -1084,67 +1084,7 @@ body{
 }
 .login-senha-toggle:hover { color:var(--text); }
 
-/* ══════════════════════════════════════════
-   MODAL — ESQUECEU SENHA
-══════════════════════════════════════════ */
-#modal-esqueceu {
-  display:none;
-  position:fixed;inset:0;
-  background:rgba(26,46,29,.55);
-  z-index:600;
-  align-items:center;justify-content:center;
-  padding:24px;
-}
-#modal-esqueceu.visivel { display:flex; }
 
-.esqueceu-card {
-  background:var(--surface);
-  border:1px solid var(--border2);
-  border-radius:var(--r2);
-  padding:28px 24px;
-  width:100%;max-width:360px;
-  box-shadow:var(--shadow);
-}
-.esqueceu-titulo {
-  font-size:18px;font-weight:800;
-  margin-bottom:4px;
-}
-.esqueceu-sub {
-  font-family:var(--mono);font-size:11px;
-  color:var(--muted2);margin-bottom:22px;line-height:1.5;
-}
-.esqueceu-erro {
-  display:none;
-  background:rgba(239,68,68,.1);
-  border:1px solid rgba(239,68,68,.3);
-  border-radius:var(--r);
-  padding:9px 12px;
-  font-family:var(--mono);font-size:12px;
-  color:var(--danger);
-  margin-bottom:14px;text-align:center;
-}
-.esqueceu-erro.visivel { display:block; }
-.esqueceu-ok {
-  display:none;
-  background:rgba(46,125,50,.1);
-  border:1px solid rgba(46,125,50,.3);
-  border-radius:var(--r);
-  padding:9px 12px;
-  font-family:var(--mono);font-size:12px;
-  color:var(--accent);
-  margin-bottom:14px;text-align:center;
-}
-.esqueceu-ok.visivel { display:block; }
-.esqueceu-btns { display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px; }
-.btn-esqueceu-link {
-  background:none;border:none;
-  font-family:var(--mono);font-size:11px;
-  color:var(--muted2);cursor:pointer;
-  text-decoration:underline;text-align:center;
-  margin-top:14px;display:block;width:100%;
-  padding:4px;
-}
-.btn-esqueceu-link:hover { color:var(--accent); }
 
 /* ══════════════════════════════════════════
    TELA — TROCA DE SENHA OBRIGATÓRIA (1° ACESSO)
@@ -1227,55 +1167,18 @@ body{
 
     <button class="btn-login" id="btn-login" onclick="fazerLogin()">Entrar</button>
 
-    <button class="btn-esqueceu-link" onclick="abrirEsqueceuSenha()">
-      Esqueceu sua senha?
-    </button>
-  </div>
-</div>
-
-<!-- ════════════════ MODAL ESQUECEU SENHA ════════════════ -->
-<div id="modal-esqueceu">
-  <div class="esqueceu-card">
-    <div class="login-logo">PREVFISH</div>
-    <div class="esqueceu-titulo">Redefinir senha</div>
-    <div class="esqueceu-sub">Informe seu e-mail e escolha uma nova senha.</div>
-
-    <div class="login-field">
-      <label class="login-label" for="esq-email">E-mail</label>
-      <input class="login-input" id="esq-email" type="email"
-        placeholder="seu@email.com" autocomplete="email"
-        onkeydown="if(event.key==='Enter') document.getElementById('esq-nova').focus()"/>
-    </div>
-
-    <div class="login-field">
-      <label class="login-label" for="esq-nova">Nova senha</label>
-      <div class="login-senha-wrap">
-        <input class="login-input" id="esq-nova" type="password"
-          placeholder="Mínimo 6 caracteres"
-          onkeydown="if(event.key==='Enter') document.getElementById('esq-confirma').focus()"/>
-        <button class="login-senha-toggle" onclick="toggleSenhaEsq('esq-nova')" tabindex="-1">👁</button>
-      </div>
-    </div>
-
-    <div class="login-field">
-      <label class="login-label" for="esq-confirma">Confirmar nova senha</label>
-      <div class="login-senha-wrap">
-        <input class="login-input" id="esq-confirma" type="password"
-          placeholder="Repita a senha"
-          onkeydown="if(event.key==='Enter') salvarEsqueceuSenha()"/>
-        <button class="login-senha-toggle" onclick="toggleSenhaEsq('esq-confirma')" tabindex="-1">👁</button>
-      </div>
-    </div>
-
-    <div class="esqueceu-erro" id="esq-erro"></div>
-    <div class="esqueceu-ok" id="esq-ok">✅ Senha alterada com sucesso! Faça login com a nova senha.</div>
-
-    <div class="esqueceu-btns">
-      <button class="btn-cancel" onclick="fecharEsqueceuSenha()">Cancelar</button>
-      <button class="btn-confirm" onclick="salvarEsqueceuSenha()">Salvar senha</button>
+    <div style="text-align:center;margin-top:16px;font-family:var(--mono);font-size:11px;color:var(--muted2);line-height:1.7">
+      Esqueceu sua senha?<br>
+      Entre em contato com o administrador:<br>
+      <a href="https://wa.me/5517996324859" target="_blank"
+         style="color:var(--accent);font-weight:700;text-decoration:none;font-size:12px">
+        📲 Falar no WhatsApp
+      </a>
     </div>
   </div>
 </div>
+
+
 
 <!-- ════════════════ TELA TROCA DE SENHA (1° ACESSO) ════════════════ -->
 <div id="tela-trocar-senha">
@@ -1627,7 +1530,7 @@ document.addEventListener("DOMContentLoaded", () => setTimeout(atualizarHeaderH,
 // ════════════════════════════════════════════════
 // CONFIGURAÇÃO DA API
 // ════════════════════════════════════════════════
-const API_URL = "https://script.google.com/macros/s/AKfycbwn2Al_yyUdsoASGM36sx6DSLbo_cseGBgQeLVJQ3jFGpDIaOdfDsfGP0WC9lj5quJlWQ/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbxvjKvYmldzHfRQbnKuQTW_qzxPjqQFUHM4bxe9cqq-P0tshsnQtXxgW2Ejedal_F8r/exec";
 
 // ════════════════════════════════════════════════
 // ESTADO GLOBAL
@@ -1829,71 +1732,9 @@ function toggleSenhaEsq(id) {
 // ════════════════════════════════════════════════
 // ESQUECEU SUA SENHA
 // ════════════════════════════════════════════════
-function abrirEsqueceuSenha() {
-  document.getElementById("esq-email").value   = "";
-  document.getElementById("esq-nova").value    = "";
-  document.getElementById("esq-confirma").value= "";
-  document.getElementById("esq-erro").classList.remove("visivel");
-  document.getElementById("esq-ok").classList.remove("visivel");
-  document.getElementById("modal-esqueceu").classList.add("visivel");
-  setTimeout(() => document.getElementById("esq-email").focus(), 100);
-}
 
-function fecharEsqueceuSenha() {
-  document.getElementById("modal-esqueceu").classList.remove("visivel");
-}
 
-function salvarEsqueceuSenha() {
-  const erroEl = document.getElementById("esq-erro");
-  const okEl   = document.getElementById("esq-ok");
-  erroEl.classList.remove("visivel");
-  okEl.classList.remove("visivel");
 
-  const email    = (document.getElementById("esq-email").value    || "").trim().toLowerCase();
-  const nova     = (document.getElementById("esq-nova").value     || "").trim();
-  const confirma = (document.getElementById("esq-confirma").value || "").trim();
-
-  if (!email) {
-    erroEl.textContent = "❌ Informe seu e-mail.";
-    erroEl.classList.add("visivel"); return;
-  }
-  const vendedor = (estado._todosVendedores || []).find(v =>
-    String(v.email || v.EMAIL || "").toLowerCase() === email
-  );
-  if (!vendedor) {
-    erroEl.textContent = "❌ E-mail não encontrado.";
-    erroEl.classList.add("visivel"); return;
-  }
-  if (nova.length < 6) {
-    erroEl.textContent = "❌ A senha deve ter no mínimo 6 caracteres.";
-    erroEl.classList.add("visivel"); return;
-  }
-  if (nova !== confirma) {
-    erroEl.textContent = "❌ As senhas não coincidem.";
-    erroEl.classList.add("visivel"); return;
-  }
-
-  // Atualiza a senha na memória local
-  vendedor.senha = nova;
-  if (vendedor.SENHA !== undefined) vendedor.SENHA = nova;
-
-  // Salva no servidor via POST
-  fetch(API_URL, {
-    method: "POST",
-    mode: "no-cors",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      action:    "alterarSenha",
-      email:     email,
-      novaSenha: nova,
-    }),
-  }).catch(() => {});
-
-  okEl.classList.add("visivel");
-  document.getElementById("esq-nova").value    = "";
-  document.getElementById("esq-confirma").value= "";
-  setTimeout(() => fecharEsqueceuSenha(), 2200);
-}
 
 // ════════════════════════════════════════════════
 // TROCA DE SENHA OBRIGATÓRIA — 1° ACESSO
@@ -1996,32 +1837,86 @@ async function entrar() {
   // Tenta carregar lançamentos existentes do servidor
   mostrarLoading("Carregando lançamentos anteriores...");
   try {
-    const r = await jsonp(`${API_URL}?action=getLancamentos&mes=${mes}&ano=${ano}&codVendedor=${safeEncode(codV||"")}`);
+    const urlComVendedor = `${API_URL}?action=getLancamentos&mes=${mes}&ano=${ano}&codVendedor=${safeEncode(codV||"")}`;
+    console.log("PREVFISH getLancamentos URL:", urlComVendedor);
+    const r = await jsonp(urlComVendedor);
+    console.log("PREVFISH getLancamentos resposta completa:", JSON.stringify(r).slice(0,800));
+    console.log("PREVFISH parametros enviados — mes:", mes, "| ano:", ano, "| codVendedor:", codV);
+
     if (r.lancamentos && r.lancamentos.length) {
+      console.log("PREVFISH: primeiro lancamento:", JSON.stringify(r.lancamentos[0]));
+      console.log("PREVFISH: chaves sessao:", Object.keys(estado.sessao).slice(0,5));
       r.lancamentos.forEach(l => {
-        const cod = String(l.COD_CLIENTE);
-        if (!estado.sessao[cod]) return;
-        estado.sessao[cod].status = "ok";
+        const codRaw = l.COD_CLIENTE ?? l.cod_cliente ?? "";
+        const cod    = String(codRaw).trim();
+        // Match robusto: direto, sem zeros à esquerda, ou por parseInt
+        let sessKey = Object.keys(estado.sessao).find(k =>
+          k === cod ||
+          k.replace(/^0+/,"") === cod.replace(/^0+/,"") ||
+          String(parseInt(k,10)) === String(parseInt(cod,10))
+        ) || null;
+        if (!sessKey) {
+          console.warn("PREVFISH: COD_CLIENTE nao mapeado:", cod, "| sessao:", Object.keys(estado.sessao).slice(0,5));
+          return;
+        }
+        estado.sessao[sessKey].status     = "ok";
+        estado.sessao[sessKey]._jaEnviado = true;
         const qtd   = parseFloat(l.QUANTIDADE) || 0;
         const tipo  = unidadeParaTipo(l.UNIDADE);
-        const pesoU = KG_POR_UNIDADE[tipo] || 1;
-        estado.sessao[cod].itens.push({
-          id:         gerarId(),
-          codProduto: String(l.COD_PRODUTO),
-          nomeProduto:l.PRODUTO,
+        const pesoU = parseFloat(l.PESO_LIQUIDO) || KG_POR_UNIDADE[tipo] || 1;
+        if (!estado.sessao[sessKey].itensServidor) estado.sessao[sessKey].itensServidor = [];
+        estado.sessao[sessKey].itensServidor.push({
+          id:          gerarId(),
+          codProduto:  String(l.COD_PRODUTO ?? ""),
+          nomeProduto: l.PRODUTO || "",
           tipo,
-          quantidade: qtd,
-          pesoLiquido:pesoU,
-          totalKg:    qtd * pesoU,
-          observacao: l.OBSERVACAO || "",
+          unidade:     l.UNIDADE || "",
+          quantidade:  qtd,
+          pesoLiquido: pesoU,
+          totalKg:     qtd * pesoU,
+          observacao:  l.OBSERVACAO || "",
+          _doServidor: true,
         });
-        estado.sessao[cod].totalKg = estado.sessao[cod].itens.reduce((s,i)=>s+i.totalKg,0);
-        // Marca como "ok" apenas em memória (já estava salvo no servidor)
-        estado.sessao[cod]._jaEnviado = true;
+        estado.sessao[sessKey].itens   = [];
+        estado.sessao[sessKey].totalKg = estado.sessao[sessKey].itensServidor.reduce((s,i)=>s+i.totalKg,0);
       });
+      const carregados = Object.values(estado.sessao).filter(s => s._jaEnviado).length;
+      console.log("PREVFISH: clientes com historico carregado:", carregados);
+    } else {
+      console.warn("PREVFISH: getLancamentos vazio. Testando sem filtro de vendedor...");
+      // Diagnóstico: tenta sem codVendedor para ver se os dados existem na planilha
+      try {
+        const rSemFiltro = await jsonp(`${API_URL}?action=getLancamentos&mes=${mes}&ano=${ano}&codVendedor=`);
+        console.log("PREVFISH sem filtro vendedor:", JSON.stringify(rSemFiltro).slice(0,600));
+        if (rSemFiltro.lancamentos && rSemFiltro.lancamentos.length) {
+          console.warn("PREVFISH DIAGNOSTICO: dados existem na planilha mas o filtro por codVendedor esta descartando. codVendedor enviado:", codV, "| COD_VENDEDOR na planilha:", rSemFiltro.lancamentos[0]?.COD_VENDEDOR);
+          toast(`⚠️ Histórico encontrado mas filtro de vendedor não bateu. Ver console para detalhes.`, "warn");
+        } else {
+          console.warn("PREVFISH DIAGNOSTICO: nenhum dado encontrado mesmo sem filtro. Mes/Ano enviados:", mes, ano);
+          toast(`⚠️ Nenhum lançamento encontrado para ${mes}/${ano} nesta planilha.`, "warn");
+        }
+      } catch(e2) {
+        console.error("PREVFISH diagnóstico falhou:", e2);
+      }
     }
   } catch(e) {
-    toast("⚠️ Não foi possível carregar lançamentos anteriores.", "warn");
+    console.error("PREVFISH erro getLancamentos:", e);
+    toast("Aviso: nao foi possivel carregar lancamentos anteriores: " + e.message, "warn");
+  }
+
+  // Restaura confirmações locais ainda não enviadas à nuvem
+  const sessaoLocal = carregarSessaoLocal();
+  if (sessaoLocal) {
+    Object.entries(sessaoLocal).forEach(([cod, sess]) => {
+      // Só restaura itens NOVOS (não enviados) se o servidor não já trouxe esse cliente como enviado
+      if (estado.sessao[cod] && !estado.sessao[cod]._jaEnviado) {
+        estado.sessao[cod] = { ...sess, _jaEnviado: false };
+      } else if (estado.sessao[cod] && estado.sessao[cod]._jaEnviado && sess.itens && sess.itens.length > 0) {
+        // Servidor tem histórico + há itens novos salvos localmente: restaura só os novos
+        estado.sessao[cod].itens = sess.itens.filter(i => !i._doServidor);
+        estado.sessao[cod].status = "ok";
+      }
+    });
   }
 
   // Exibe o app
@@ -2293,15 +2188,19 @@ function atualizarResumoProdutos() {
   const wrap = document.getElementById("prod-resumo");
   if (!wrap) return;
 
-  if (estado.itensCliente.length === 0) {
+  const c = estado.clientes[estado.clienteIdx];
+  const sess = c ? (estado.sessao[c.codCliente] || {}) : {};
+  const todosItens = [...(sess.itensServidor || []), ...estado.itensCliente];
+
+  if (todosItens.length === 0) {
     wrap.style.display = "none"; return;
   }
 
   // Agrupa kg por fase
   const porFase = {};
-  estado.itensCliente.forEach(item => {
+  todosItens.forEach(item => {
     const prod = _prodCache.find(p => p.cod === item.codProduto);
-    const fase = prod?.fase || "Sem fase";
+    const fase = prod?.fase || item.fase || "Sem fase";
     porFase[fase] = (porFase[fase] || 0) + item.totalKg;
   });
 
@@ -2365,25 +2264,68 @@ function _rascunhoKey(codCliente) {
   return `pf_draft_${v}_${estado.mes}_${estado.ano}_${codCliente}`;
 }
 
+// Chave para sessões confirmadas localmente (ainda não enviadas à nuvem)
+function _sessaoKey() {
+  const v = estado.vendedor?.codigo || "x";
+  return `pf_sessao_local_${v}_${estado.mes}_${estado.ano}`;
+}
+
+function salvarSessaoLocal() {
+  try {
+    // Salva apenas clientes com itens novos ainda não enviados
+    const paraGuardar = {};
+    Object.entries(estado.sessao).forEach(([cod, sess]) => {
+      if ((sess.status === "ok" || sess.status === "sem-venda") && !sess._jaEnviado) {
+        paraGuardar[cod] = sess;
+      } else if (sess.status === "ok" && sess._jaEnviado && (sess.itens || []).length > 0) {
+        // Tem histórico na nuvem + novos itens pendentes: salva só os novos
+        paraGuardar[cod] = {
+          status:        sess.status,
+          itens:         sess.itens,
+          itensServidor: sess.itensServidor || [],
+          totalKg:       sess.totalKg,
+          _jaEnviado:    true,
+        };
+      }
+    });
+    if (Object.keys(paraGuardar).length > 0) {
+      localStorage.setItem(_sessaoKey(), JSON.stringify(paraGuardar));
+    } else {
+      localStorage.removeItem(_sessaoKey());
+    }
+  } catch(e) {}
+}
+
+function carregarSessaoLocal() {
+  try {
+    const raw = localStorage.getItem(_sessaoKey());
+    return raw ? JSON.parse(raw) : null;
+  } catch(e) { return null; }
+}
+
+function limparSessaoLocal() {
+  try { localStorage.removeItem(_sessaoKey()); } catch(e) {}
+}
+
 function salvarRascunho(codCliente, itens) {
   try {
     if (itens && itens.length > 0) {
-      sessionStorage.setItem(_rascunhoKey(codCliente), JSON.stringify(itens));
+      localStorage.setItem(_rascunhoKey(codCliente), JSON.stringify(itens));
     } else {
-      sessionStorage.removeItem(_rascunhoKey(codCliente));
+      localStorage.removeItem(_rascunhoKey(codCliente));
     }
   } catch(e) { /* ignora erro de storage */ }
 }
 
 function carregarRascunho(codCliente) {
   try {
-    const raw = sessionStorage.getItem(_rascunhoKey(codCliente));
+    const raw = localStorage.getItem(_rascunhoKey(codCliente));
     return raw ? JSON.parse(raw) : null;
   } catch(e) { return null; }
 }
 
 function limparRascunho(codCliente) {
-  try { sessionStorage.removeItem(_rascunhoKey(codCliente)); } catch(e) {}
+  try { localStorage.removeItem(_rascunhoKey(codCliente)); } catch(e) {}
 }
 
 // ──────────────────────────────────────────────
@@ -2394,13 +2336,16 @@ function atualizarClienteAtual() {
   const c   = estado.clientes[idx];
   if (!c) return;
 
-  // Carrega itens deste cliente — prioriza rascunho local se ainda pendente
   const sess = estado.sessao[c.codCliente] || { status:"pendente", itens:[], totalKg:0 };
+
+  // itensCliente = apenas os itens NOVOS desta sessão (para edição)
+  // itensServidor = histórico imutável já salvo no servidor
   if (sess.status === "pendente") {
     const rascunho = carregarRascunho(c.codCliente);
-    estado.itensCliente = rascunho ? [...rascunho] : [...sess.itens];
+    estado.itensCliente = rascunho ? [...rascunho] : [];
   } else {
-    estado.itensCliente = [...sess.itens];
+    // itens = novos ainda não enviados; itensServidor = histórico do servidor
+    estado.itensCliente = [...(sess.itens || [])];
   }
   estado.editandoId = null;
 
@@ -2409,9 +2354,18 @@ function atualizarClienteAtual() {
   document.getElementById("disp-cod-cliente").textContent  = `Cód: ${c.codCliente}  |  Loja: ${c.loja || "—"}`;
 
   const statusEl = document.getElementById("disp-status-cliente");
+  const nServidor = (sess.itensServidor || []).length;
+  const nNovos    = (sess.itens || []).length;
+
   if (sess.status === "ok") {
-    statusEl.className  = "cliente-status status-ok";
-    statusEl.textContent= "✓ Lançado";
+    statusEl.className = "cliente-status status-ok";
+    if (sess._jaEnviado && nNovos === 0) {
+      statusEl.textContent = `☁️ ${nServidor} item(s) já na nuvem — adicione mais se necessário`;
+    } else if (sess._jaEnviado && nNovos > 0) {
+      statusEl.textContent = `☁️ ${nServidor} na nuvem + ${nNovos} novo(s) pendente(s) de envio`;
+    } else {
+      statusEl.textContent = `✓ Confirmado localmente (${nNovos} item(s)) — pendente de envio`;
+    }
   } else if (sess.status === "sem-venda") {
     statusEl.className  = "cliente-status status-sem-venda";
     statusEl.textContent= "— Sem venda";
@@ -2510,9 +2464,17 @@ function renderizarLista() {
 
   listEl.innerHTML = "";
 
-  if (estado.itensCliente.length === 0) {
+  const c = estado.clientes[estado.clienteIdx];
+  const sess = c ? (estado.sessao[c.codCliente] || {}) : {};
+  const itensServidor = sess.itensServidor || [];
+  const itensNovos    = estado.itensCliente; // apenas novos desta sessão
+
+  const temQualquerCoisa = itensServidor.length > 0 || itensNovos.length > 0;
+
+  if (!temQualquerCoisa) {
     vazioEl.style.display = "block";
     totalEl.style.display = "none";
+    atualizarResumoProdutos();
     return;
   }
 
@@ -2520,33 +2482,89 @@ function renderizarLista() {
   totalEl.style.display = "flex";
 
   let totalKg = 0;
-  estado.itensCliente.forEach(item => {
-    totalKg += item.totalKg;
 
-    const badgeClass = { Saco:"badge-saco", Granel:"badge-granel", Bag:"badge-bag" }[item.tipo] || "";
-    const card = document.createElement("div");
-    card.className = "item-card" + (estado.editandoId === item.id ? " editando" : "");
-    card.innerHTML = `
-      <div class="item-card-header">
-        <div class="item-nome">${item.nomeProduto}</div>
-        <span class="item-badge ${badgeClass}">${item.tipo}</span>
-      </div>
-      <div class="item-meta">
-        <span>Qtd: <strong>${nf(item.quantidade)}</strong></span>
-        <span>Peso unit: <strong>${nf(item.pesoLiquido)} kg</strong></span>
-        <span class="item-kg">⟹ ${nf(item.totalKg)} kg</span>
-      </div>
-      <div class="item-acoes">
-        <button class="btn-edit" onclick="editarItem('${item.id}')">✏️ Editar</button>
-        <button class="btn-del"  onclick="excluirItem('${item.id}')">🗑</button>
-      </div>
+  // ── Seção: Histórico do servidor (somente leitura) ──
+  if (itensServidor.length > 0) {
+    const headerServidor = document.createElement("div");
+    headerServidor.style.cssText = `
+      display:flex; align-items:center; gap:8px;
+      padding:7px 10px; margin-bottom:6px;
+      background:rgba(46,125,50,.07);
+      border:1px solid rgba(46,125,50,.2);
+      border-radius:8px;
+      font-family:var(--mono); font-size:11px;
+      color:var(--accent);
     `;
-    listEl.appendChild(card);
-  });
+    const totalKgServidor = itensServidor.reduce((s,i)=>s+i.totalKg,0);
+    headerServidor.innerHTML = `☁️ <strong>Já na nuvem — ${itensServidor.length} item(s) · ${nf(totalKgServidor)} kg</strong> <span style="color:var(--muted2);font-size:10px">(histórico, não será reenviado)</span>`;
+    listEl.appendChild(headerServidor);
+
+    itensServidor.forEach(item => {
+      totalKg += item.totalKg;
+      const badgeClass = { Saco:"badge-saco", Granel:"badge-granel", Bag:"badge-bag" }[item.tipo] || "";
+      const card = document.createElement("div");
+      card.className = "item-card";
+      card.style.opacity = "0.72";
+      card.style.borderStyle = "dashed";
+      card.innerHTML = `
+        <div class="item-card-header">
+          <div class="item-nome">${item.nomeProduto}</div>
+          <span class="item-badge ${badgeClass}">${item.unidade || item.tipo}</span>
+        </div>
+        <div class="item-meta">
+          <span>Qtd: <strong>${nf(item.quantidade)}</strong></span>
+          <span>Peso unit: <strong>${nf(item.pesoLiquido)} kg</strong></span>
+          <span class="item-kg">⟹ ${nf(item.totalKg)} kg</span>
+        </div>
+        <div style="margin-top:6px;font-family:var(--mono);font-size:10px;color:var(--muted2)">☁️ salvo na nuvem</div>
+      `;
+      listEl.appendChild(card);
+    });
+  }
+
+  // ── Seção: Itens novos (editáveis) ──
+  if (itensNovos.length > 0) {
+    if (itensServidor.length > 0) {
+      const headerNovos = document.createElement("div");
+      headerNovos.style.cssText = `
+        display:flex; align-items:center; gap:8px;
+        padding:7px 10px; margin:10px 0 6px;
+        background:rgba(151,191,63,.1);
+        border:1px solid rgba(151,191,63,.35);
+        border-radius:8px;
+        font-family:var(--mono); font-size:11px;
+        color:#5a7a1a;
+      `;
+      headerNovos.innerHTML = `✏️ <strong>Novos lançamentos — ${itensNovos.length} item(s)</strong> <span style="color:var(--muted2);font-size:10px">(pendente de envio)</span>`;
+      listEl.appendChild(headerNovos);
+    }
+
+    itensNovos.forEach(item => {
+      totalKg += item.totalKg;
+      const badgeClass = { Saco:"badge-saco", Granel:"badge-granel", Bag:"badge-bag" }[item.tipo] || "";
+      const card = document.createElement("div");
+      card.className = "item-card" + (estado.editandoId === item.id ? " editando" : "");
+      card.innerHTML = `
+        <div class="item-card-header">
+          <div class="item-nome">${item.nomeProduto}</div>
+          <span class="item-badge ${badgeClass}">${item.unidade || item.tipo}</span>
+        </div>
+        <div class="item-meta">
+          <span>Qtd: <strong>${nf(item.quantidade)}</strong></span>
+          <span>Peso unit: <strong>${nf(item.pesoLiquido)} kg</strong></span>
+          <span class="item-kg">⟹ ${nf(item.totalKg)} kg</span>
+        </div>
+        ${item.observacao ? `<div style="margin-top:4px;font-size:12px;color:var(--muted2)">📝 ${item.observacao}</div>` : ""}
+        <div class="item-acoes">
+          <button class="btn-edit" onclick="editarItem('${item.id}')">✏️ Editar</button>
+          <button class="btn-del"  onclick="excluirItem('${item.id}')">🗑</button>
+        </div>
+      `;
+      listEl.appendChild(card);
+    });
+  }
 
   document.getElementById("total-kg-display").textContent = nf(totalKg) + " kg";
-
-  // Atualiza resumo por fase
   atualizarResumoProdutos();
 }
 
@@ -2628,6 +2646,7 @@ function registrarSemVenda() {
       estado.itensCliente = [];
 
       toast("🚫 Sem venda registrado localmente.");
+      salvarSessaoLocal();
       atualizarResumo();
       atualizarSalvarFinal();
 
@@ -2661,15 +2680,23 @@ function confirmarFinalizar() {
     () => {
       // Salva apenas em memória (estado)
       const cod = c.codCliente;
+      const sessAnterior = estado.sessao[cod] || {};
+      // itens = apenas os NOVOS desta sessão (não duplica os do servidor)
+      const novosItens = [...estado.itensCliente];
+      const totalKgNovos = novosItens.reduce((s,i)=>s+i.totalKg, 0);
+      const totalKgServidor = (sessAnterior.itensServidor || []).reduce((s,i)=>s+i.totalKg, 0);
       estado.sessao[cod] = {
-        status:  "ok",
-        itens:   [...estado.itensCliente],
-        totalKg: totalKg,
+        status:         "ok",
+        itens:          novosItens,           // somente os novos → enviados ao salvar
+        itensServidor:  sessAnterior.itensServidor || [], // histórico imutável
+        totalKg:        totalKgNovos + totalKgServidor,
+        _jaEnviado:     sessAnterior._jaEnviado || false,
       };
       limparRascunho(cod);
       estado.itensCliente = [];
 
       toast("✅ Cliente confirmado! Continue os demais e salve tudo ao final.");
+      salvarSessaoLocal();
       atualizarResumo();
       atualizarSalvarFinal();
 
@@ -2828,10 +2855,11 @@ function atualizarResumo() {
   const ok       = sessoes.filter(s => s.status === "ok").length;
   const semVenda = sessoes.filter(s => s.status === "sem-venda").length;
 
-  // Agrega kg de todas as sessões finalizadas
+  // Agrega kg de todas as sessões finalizadas (servidor + novos)
   const porFase = {};
   sessoes.forEach(sess => {
-    (sess.itens || []).forEach(item => {
+    const todos = [...(sess.itensServidor || []), ...(sess.itens || [])];
+    todos.forEach(item => {
       const fase = item.fase || "—";
       porFase[fase] = (porFase[fase] || 0) + (item.totalKg || 0);
     });
@@ -2842,10 +2870,11 @@ function atualizarResumo() {
   document.getElementById("res-sem-venda").textContent = semVenda;
   document.getElementById("res-total-kg").textContent  = nf(totalKg) + " kg";
 
-  // Agrega também por unidade
+  // Agrega também por unidade (servidor + novos)
   const porUnidade = {};
   sessoes.forEach(sess => {
-    (sess.itens || []).forEach(item => {
+    const todos = [...(sess.itensServidor || []), ...(sess.itens || [])];
+    todos.forEach(item => {
       const unid = item.unidade || item.tipo || "—";
       porUnidade[unid] = (porUnidade[unid] || 0) + (item.quantidade || 0);
     });
@@ -2953,6 +2982,7 @@ function sair() {
     "Você será desconectado. Tem certeza que deseja sair?",
     () => {
       localStorage.removeItem("pf_sessao");
+      limparSessaoLocal();
       location.reload();
     }
   );
@@ -2987,11 +3017,15 @@ function atualizarSalvarFinal() {
   const ok       = sessoes.filter(s => s.status === "ok").length;
   const semVenda = sessoes.filter(s => s.status === "sem-venda").length;
   const pendentes= sessoes.filter(s => s.status === "pendente").length;
-  const finalizados = ok + semVenda;
+  // Apenas clientes que têm novos dados ainda não enviados ao servidor
+  const finalizados = sessoes.filter(s =>
+    (s.status === "ok" || s.status === "sem-venda") && !s._jaEnviado
+  ).length;
 
   // Atualiza stats visuais
   const infoEl = document.getElementById("salvar-final-info");
   if (infoEl) {
+    const jaEnviados = sessoes.filter(s => s._jaEnviado).length;
     infoEl.innerHTML = `
       <div class="sf-stat">
         <div class="sf-stat-val">${ok}</div>
@@ -3005,6 +3039,10 @@ function atualizarSalvarFinal() {
         <div class="sf-stat-val muted">${pendentes}</div>
         <div class="sf-stat-lbl">Pendentes</div>
       </div>
+      ${jaEnviados > 0 ? `<div class="sf-stat">
+        <div class="sf-stat-val" style="color:var(--muted2)">☁️ ${jaEnviados}</div>
+        <div class="sf-stat-lbl">Já na nuvem</div>
+      </div>` : ""}
       <div class="sf-stat">
         <div class="sf-stat-val">${total}</div>
         <div class="sf-stat-lbl">Total</div>
@@ -3033,7 +3071,8 @@ function atualizarSalvarFinal() {
 async function salvarTudoFinal() {
   const confirmados = estado.clientes.filter(c => {
     const s = estado.sessao[c.codCliente];
-    return s && s.status !== "pendente";
+    // Só envia clientes que têm status confirmado E ainda não foram enviados ao servidor
+    return s && s.status !== "pendente" && !s._jaEnviado;
   });
 
   if (confirmados.length === 0) {
@@ -3067,14 +3106,12 @@ async function salvarTudoFinal() {
         String(agora.getSeconds()).padStart(2,"0")
       ].join(":");
 
-      // Monta todas as linhas de uma vez
+      // Monta todas as linhas de uma vez — somente itens NOVOS (sess.itens)
       const todasLinhas = [];
       confirmados.forEach(c => {
         const sess = estado.sessao[c.codCliente];
-        if (sess.status === "sem-venda") {
-          // sem-venda: envia linha especial ou apenas sem itens
-          return;
-        }
+        if (sess.status === "sem-venda") return;
+        // sess.itens = apenas os novos não enviados ainda
         (sess.itens || []).forEach(i => {
           todasLinhas.push({
             COD_VENDEDOR:    sanitize(v.codigo),
@@ -3133,10 +3170,25 @@ async function salvarTudoFinal() {
 
         // Limpa rascunhos locais dos confirmados
         confirmados.forEach(c => limparRascunho(c.codCliente));
+        limparSessaoLocal();
+
+        // Pós-envio: move os itens novos para itensServidor (histórico) e zera itens
+        confirmados.forEach(c => {
+          const sess = estado.sessao[c.codCliente];
+          if (sess) {
+            // Acumula no histórico do servidor
+            const novosEnviados = (sess.itens || []).map(i => ({ ...i, _doServidor: true }));
+            sess.itensServidor = [...(sess.itensServidor || []), ...novosEnviados];
+            sess.itens      = [];      // limpa os novos (já foram enviados)
+            sess._jaEnviado = true;
+          }
+        });
 
         esconderLoading();
         toast(`✅ ${confirmados.length} cliente(s) salvos na nuvem com sucesso!`);
+        atualizarResumo();
         atualizarSalvarFinal();
+        atualizarClienteAtual();
 
       } catch(e) {
         esconderLoading();
@@ -3221,7 +3273,8 @@ function exportarPDF() {
       linhasPDF.push({ cliente: c.nomeCliente, cod: c.codCliente, produto: "— Sem venda —", qtd: "—", unid: "—", kg: 0 });
       return;
     }
-    (sess.itens || []).forEach(item => {
+    const todosItens = [...(sess.itensServidor || []), ...(sess.itens || [])];
+    todosItens.forEach(item => {
       linhasPDF.push({
         cliente: c.nomeCliente,
         cod:     c.codCliente,
