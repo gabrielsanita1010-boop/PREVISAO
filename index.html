@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>PREVFISH — Previsão de Vendas</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&family=Oxanium:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
 /* ══════════════════════════════════════════
    VARIÁVEIS E RESET
@@ -26,7 +26,7 @@
   --text:      #1a2e1d;
   --muted:     #7a9e82;
   --muted2:    #4d7a58;
-  --mono:      'Roboto Mono', monospace;
+  --mono:      'Oxanium', sans-serif;
   --sans:      'Roboto', sans-serif;
   --r:         10px;
   --r2:        16px;
@@ -921,9 +921,11 @@ body{
   .sf-stat-lbl{font-size:8px}
   .btn-salvar-final{padding:14px;font-size:14px}
 
-  /* Botão relatório: só ícone */
+  /* Botão relatório e resumo: só ícone */
   .btn-relatorio-txt{display:none}
+  .btn-resumo-txt{display:none}
   #btn-pdf{padding:6px 10px}
+  #btn-resumo{padding:6px 10px}
 }
 
 /* ══════════════════════════════════════════
@@ -986,6 +988,209 @@ body{
 .btn-relatorio{display:flex;align-items:center;gap:6px}
 .btn-relatorio-txt{font-size:12px;font-family:var(--mono);font-weight:700;white-space:nowrap}
 @media(max-width:380px){.btn-relatorio-txt{display:none}}
+
+/* ── BOTÃO RESUMO ── */
+#btn-resumo{padding:6px 14px;display:flex;align-items:center;gap:6px}
+.btn-resumo-txt{font-size:12px;font-family:var(--mono);font-weight:700;white-space:nowrap}
+@media(max-width:380px){.btn-resumo-txt{display:none}}
+
+/* ── PAINEL: kg do cliente ── */
+.cli-kg-painel{
+  font-family:var(--mono);font-size:10px;font-weight:700;
+  color:var(--accent);white-space:nowrap;flex-shrink:0;
+}
+.cli-kg-painel.empty{color:var(--border2);font-size:9px}
+.cli-kg-painel.sem-venda{color:var(--muted);font-size:9px}
+
+/* ══════════════════════════════════════════
+   MODAL DASHBOARD RESUMO
+══════════════════════════════════════════ */
+.resumo-overlay{
+  position:fixed;inset:0;
+  background:rgba(26,46,29,.55);
+  z-index:400;
+  display:none;
+  align-items:flex-end;
+  justify-content:center;
+}
+.resumo-overlay.aberta{display:flex}
+@media(min-width:600px){
+  .resumo-overlay{align-items:center}
+}
+.resumo-sheet{
+  background:var(--surface);
+  border-radius:var(--r2) var(--r2) 0 0;
+  width:100%;max-width:520px;
+  max-height:90vh;
+  overflow-y:auto;
+  padding:0 0 24px;
+  -webkit-overflow-scrolling:touch;
+}
+@media(min-width:600px){
+  .resumo-sheet{border-radius:var(--r2);max-height:88vh}
+}
+.resumo-sheet::-webkit-scrollbar{width:4px}
+.resumo-sheet::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
+.resumo-header{
+  display:flex;align-items:center;gap:10px;
+  padding:14px 18px 12px;
+  border-bottom:1px solid var(--border);
+  position:sticky;top:0;
+  background:var(--surface);
+  z-index:1;
+}
+.resumo-titulo{
+  font-family:var(--mono);font-size:11px;
+  text-transform:uppercase;letter-spacing:1.5px;
+  color:var(--muted2);flex:1;
+}
+.resumo-fechar{
+  background:none;border:none;color:var(--muted2);
+  font-size:18px;cursor:pointer;padding:0;line-height:1;
+}
+.resumo-fechar:hover{color:var(--text)}
+.resumo-body{padding:16px 18px;display:flex;flex-direction:column;gap:14px}
+
+/* Card total geral */
+.resumo-total-card{
+  background:var(--accent);
+  border-radius:var(--r);
+  padding:14px 16px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.resumo-total-lbl{
+  font-family:var(--mono);font-size:10px;
+  color:rgba(255,255,255,.7);text-transform:uppercase;letter-spacing:1px;
+}
+.resumo-total-val{
+  font-family:var(--mono);font-size:24px;font-weight:700;color:#fff;margin-top:2px;
+}
+.resumo-total-icon{font-size:30px;opacity:.35}
+
+/* Grid de cards */
+.resumo-cards{
+  display:grid;grid-template-columns:1fr 1fr;gap:10px;
+}
+.resumo-card{
+  background:var(--card2);border:1px solid var(--border2);
+  border-radius:var(--r);padding:12px 10px 10px;text-align:center;
+}
+.resumo-card-val{
+  font-family:var(--mono);font-size:22px;font-weight:700;
+  color:var(--accent);line-height:1.1;
+}
+.resumo-card-val.warn{color:var(--warn)}
+.resumo-card-val.muted{color:var(--muted2)}
+.resumo-card-lbl{
+  font-family:var(--mono);font-size:9px;
+  text-transform:uppercase;letter-spacing:.8px;
+  color:var(--muted2);margin-top:3px;
+}
+
+/* Progresso */
+.resumo-prog-label{
+  display:flex;justify-content:space-between;
+  font-family:var(--mono);font-size:9px;color:var(--muted2);
+  margin-bottom:5px;text-transform:uppercase;letter-spacing:.8px;
+}
+.resumo-prog-bar{height:6px;background:var(--border2);border-radius:4px;overflow:hidden}
+.resumo-prog-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:4px;transition:width .5s cubic-bezier(.4,0,.2,1)}
+
+/* Sub-seções */
+.resumo-sub{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--r);overflow:hidden;
+}
+.resumo-sub-title{
+  font-family:var(--mono);font-size:9px;
+  text-transform:uppercase;letter-spacing:1px;
+  color:var(--muted2);padding:8px 12px 6px;
+  border-bottom:1px solid var(--border);
+  background:var(--card);
+}
+.resumo-bar-row{
+  display:flex;align-items:center;gap:10px;
+  padding:8px 12px;border-bottom:1px solid var(--border);
+}
+.resumo-bar-row:last-child{border-bottom:none}
+.resumo-bar-label{
+  font-family:var(--mono);font-size:10px;color:var(--muted2);
+  width:52px;text-align:right;flex-shrink:0;
+}
+.resumo-bar-track{
+  flex:1;height:16px;background:var(--card2);
+  border-radius:4px;overflow:hidden;
+}
+.resumo-bar-fill{
+  height:100%;background:var(--accent);border-radius:4px;
+  display:flex;align-items:center;justify-content:flex-end;padding-right:5px;
+  min-width:30px;
+}
+.resumo-bar-fill span{font-size:9px;color:rgba(255,255,255,.9);font-family:var(--mono);font-weight:700;white-space:nowrap}
+
+/* Linha unidade */
+.resumo-unid-row{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:8px 12px;border-bottom:1px solid var(--border);
+}
+.resumo-unid-row:last-child{border-bottom:none}
+.resumo-unid-lbl{font-size:11px;font-family:var(--mono);color:var(--text)}
+.resumo-unid-val{font-size:11px;font-family:var(--mono);font-weight:700;color:var(--accent)}
+
+/* Lista por cliente */
+.resumo-cli-header{
+  display:grid;
+  grid-template-columns:12px 1fr 80px 36px;
+  gap:6px;align-items:center;
+  padding:6px 12px;
+  border-bottom:1px solid var(--border2);
+  background:var(--card);
+}
+.resumo-cli-hcol{
+  font-family:var(--mono);font-size:8px;
+  text-transform:uppercase;letter-spacing:.8px;color:var(--muted2);
+}
+.resumo-cli-hcol.right{text-align:right}
+.resumo-cli-row{
+  display:grid;
+  grid-template-columns:12px 1fr 80px 36px;
+  gap:6px;align-items:center;
+  padding:7px 12px;
+  border-bottom:1px solid var(--border);
+  transition:background .12s;
+}
+.resumo-cli-row:last-child{border-bottom:none}
+.resumo-cli-row:hover{background:var(--card2)}
+.resumo-cli-row.pendente{opacity:.45}
+.resumo-cli-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.resumo-cli-dot.ok{background:var(--accent)}
+.resumo-cli-dot.pendente{background:var(--warn)}
+.resumo-cli-dot.sem-venda{background:var(--muted)}
+.resumo-cli-nome{font-size:11px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.resumo-cli-cod{font-family:var(--mono);font-size:9px;color:var(--muted2)}
+.resumo-cli-kg{font-family:var(--mono);font-size:11px;font-weight:700;color:var(--accent);text-align:right}
+.resumo-cli-kg.empty{color:var(--border2);font-size:9px}
+.resumo-cli-kg.sem-venda{color:var(--muted2);font-size:9px}
+.resumo-cli-pct{font-family:var(--mono);font-size:9px;color:var(--muted2);text-align:right}
+.resumo-cli-total{
+  display:grid;
+  grid-template-columns:12px 1fr 80px 36px;
+  gap:6px;align-items:center;
+  padding:8px 12px 6px;
+  border-top:1px solid var(--border2);
+  background:var(--card);
+}
+.resumo-cli-total-lbl{
+  font-family:var(--mono);font-size:9px;font-weight:700;
+  color:var(--accent);text-transform:uppercase;letter-spacing:.8px;
+}
+.resumo-cli-total-val{
+  font-family:var(--mono);font-size:12px;font-weight:700;
+  color:var(--accent);text-align:right;
+}
+.resumo-cli-total-pct{
+  font-family:var(--mono);font-size:9px;color:var(--muted2);text-align:right;
+}
 
 
 /* ══════════════════════════════════════════
@@ -1237,6 +1442,19 @@ body{
   </div>
 </div>
 
+<!-- ════════════════ MODAL RESUMO / DASHBOARD ════════════════ -->
+<div class="resumo-overlay" id="resumo-overlay" onclick="fecharResumo(event)">
+  <div class="resumo-sheet">
+    <div class="resumo-header">
+      <div class="resumo-titulo">📊 Resumo geral</div>
+      <button class="resumo-fechar" onclick="fecharResumo()">✕</button>
+    </div>
+    <div class="resumo-body" id="resumo-body">
+      <!-- preenchido dinamicamente -->
+    </div>
+  </div>
+</div>
+
 <!-- ════════════════ APP PRINCIPAL ════════════════ -->
 <div id="app">
 
@@ -1249,6 +1467,10 @@ body{
         <span class="header-vendedor" id="hdr-vendedor">—</span>
 
       </div>
+      <button class="btn-icon" onclick="abrirResumo()" title="Ver Resumo" id="btn-resumo">
+        <span>📊</span>
+        <span class="btn-resumo-txt">Resumo</span>
+      </button>
       <button class="btn-icon btn-relatorio" onclick="exportarPDF()" title="Gerar Relatório PDF" id="btn-pdf">
         <span class="btn-relatorio-icon">📄</span>
         <span class="btn-relatorio-txt">Relatório</span>
@@ -2942,12 +3164,25 @@ function renderizarPainelClientes() {
       div.className= `cliente-item-painel${ativo ? " ativo" : ""}`;
       div.onclick  = () => { irClienteDireto(i); fecharDrawer(); };
       const qtdRascunho = temRascunho ? carregarRascunho(c.codCliente).length : 0;
+      const sess = estado.sessao[c.codCliente] || {};
+      const totalKgCli = (() => {
+        if (sessStatus === "sem-venda") return null;
+        const todos = [...(sess.itensServidor || []), ...(sess.itens || [])];
+        const kg = todos.reduce((s,i)=>s+i.totalKg,0);
+        return kg > 0 ? kg : null;
+      })();
+      const kgHtml = sessStatus === "sem-venda"
+        ? `<div class="cli-kg-painel sem-venda">sem venda</div>`
+        : totalKgCli !== null
+          ? `<div class="cli-kg-painel">${nf(totalKgCli)} kg</div>`
+          : `<div class="cli-kg-painel empty">—</div>`;
       div.innerHTML= `
         <div class="cli-dot ${status}"></div>
         <div class="cli-info">
           <div class="cli-nome ${sessStatus === "pendente" && !temRascunho ? "pendente" : ""}">${c.nomeCliente}</div>
           <div class="cli-num">#${c.codCliente}${temRascunho ? ` · ✏️ ${qtdRascunho} item(s)` : ""}</div>
         </div>
+        ${kgHtml}
       `;
       el.appendChild(div);
     });
@@ -3252,6 +3487,170 @@ function mostrarLoading(msg) {
 }
 function esconderLoading() {
   document.getElementById("loading").style.display = "none";
+}
+
+// ════════════════════════════════════════════════
+// DASHBOARD RESUMO
+// ════════════════════════════════════════════════
+function abrirResumo() {
+  const overlay = document.getElementById("resumo-overlay");
+  const body    = document.getElementById("resumo-body");
+  if (!overlay || !body) return;
+
+  const sessoes  = Object.values(estado.sessao);
+  const total    = estado.clientes.length;
+  const ok       = sessoes.filter(s => s.status === "ok").length;
+  const semVenda = sessoes.filter(s => s.status === "sem-venda").length;
+  const pendentes= sessoes.filter(s => s.status === "pendente").length;
+  const nauvem   = sessoes.filter(s => s._jaEnviado).length;
+  const pct      = total > 0 ? Math.round((ok + semVenda) / total * 100) : 0;
+
+  // Totais por fase
+  const porFase = {};
+  sessoes.forEach(sess => {
+    [...(sess.itensServidor||[]),...(sess.itens||[])].forEach(item => {
+      const fase = item.fase || "—";
+      porFase[fase] = (porFase[fase]||0) + (item.totalKg||0);
+    });
+  });
+  const totalKgGeral = Object.values(porFase).reduce((s,v)=>s+v,0);
+  const maxFaseKg    = Math.max(...Object.values(porFase), 1);
+
+  // Totais por unidade
+  const porUnidade = {};
+  sessoes.forEach(sess => {
+    [...(sess.itensServidor||[]),...(sess.itens||[])].forEach(item => {
+      const unid = item.unidade || item.tipo || "—";
+      porUnidade[unid] = (porUnidade[unid]||0) + (item.quantidade||0);
+    });
+  });
+  const UNID_LABEL = { SC:"SC — Sacos", KG:"KG — Granel", BG:"BG — Bags", Saco:"Sacos", Granel:"Granel (kg)", Bag:"Bags" };
+
+  // Por cliente — ordenado por kg desc
+  const porCliente = estado.clientes.map(c => {
+    const sess = estado.sessao[c.codCliente] || {};
+    const status = sess.status || "pendente";
+    const todos  = [...(sess.itensServidor||[]),...(sess.itens||[])];
+    const kg     = todos.reduce((s,i)=>s+i.totalKg,0);
+    return { nome: c.nomeCliente, cod: c.codCliente, status, kg };
+  }).sort((a,b) => b.kg - a.kg);
+
+  // ── Monta HTML ──
+  const fasesHTML = Object.entries(porFase).sort((a,b)=>b[1]-a[1]).map(([fase, kg]) => {
+    const w = Math.round(kg / maxFaseKg * 100);
+    return `
+      <div class="resumo-bar-row">
+        <div class="resumo-bar-label">${fase}</div>
+        <div class="resumo-bar-track">
+          <div class="resumo-bar-fill" style="width:${w}%">
+            <span>${nf(kg)}</span>
+          </div>
+        </div>
+      </div>`;
+  }).join("") || `<div style="padding:10px 12px;font-size:11px;color:var(--muted2)">Nenhum dado ainda.</div>`;
+
+  const unidsHTML = Object.entries(porUnidade).sort().map(([unid, qtd]) => `
+    <div class="resumo-unid-row">
+      <div class="resumo-unid-lbl">${UNID_LABEL[unid]||unid}</div>
+      <div class="resumo-unid-val">${nf(qtd)}</div>
+    </div>`).join("") || `<div style="padding:10px 12px;font-size:11px;color:var(--muted2)">Nenhum dado ainda.</div>`;
+
+  const clientesHTML = porCliente.map(c => {
+    const dotClass = c.status==="ok" ? "ok" : c.status==="sem-venda" ? "sem-venda" : "pendente";
+    const kgHtml   = c.status==="sem-venda"
+      ? `<div class="resumo-cli-kg sem-venda">sem venda</div>`
+      : c.kg > 0
+        ? `<div class="resumo-cli-kg">${nf(c.kg)}</div>`
+        : `<div class="resumo-cli-kg empty">—</div>`;
+    const pctHtml  = (c.kg > 0 && totalKgGeral > 0)
+      ? `<div class="resumo-cli-pct">${(c.kg/totalKgGeral*100).toFixed(1)}%</div>`
+      : `<div class="resumo-cli-pct">—</div>`;
+    const rowCls   = c.status==="pendente" ? " pendente" : "";
+    return `
+      <div class="resumo-cli-row${rowCls}">
+        <div class="resumo-cli-dot ${dotClass}"></div>
+        <div>
+          <div class="resumo-cli-nome">${c.nome}</div>
+          <div class="resumo-cli-cod">#${c.cod}</div>
+        </div>
+        ${kgHtml}
+        ${pctHtml}
+      </div>`;
+  }).join("");
+
+  body.innerHTML = `
+    <div class="resumo-total-card">
+      <div>
+        <div class="resumo-total-lbl">Total kg previsto</div>
+        <div class="resumo-total-val">${nf(totalKgGeral)} kg</div>
+      </div>
+      <div class="resumo-total-icon">🐟</div>
+    </div>
+
+    <div class="resumo-cards">
+      <div class="resumo-card">
+        <div class="resumo-card-val">${ok}</div>
+        <div class="resumo-card-lbl">Atendidos</div>
+      </div>
+      <div class="resumo-card">
+        <div class="resumo-card-val warn">${pendentes}</div>
+        <div class="resumo-card-lbl">Pendentes</div>
+      </div>
+      <div class="resumo-card">
+        <div class="resumo-card-val muted">${semVenda}</div>
+        <div class="resumo-card-lbl">Sem venda</div>
+      </div>
+      <div class="resumo-card">
+        <div class="resumo-card-val">☁️ ${nauvem}</div>
+        <div class="resumo-card-lbl">Na nuvem</div>
+      </div>
+    </div>
+
+    <div>
+      <div class="resumo-prog-label">
+        <span>Progresso geral</span><span>${pct}%</span>
+      </div>
+      <div class="resumo-prog-bar">
+        <div class="resumo-prog-fill" style="width:${pct}%"></div>
+      </div>
+    </div>
+
+    <div class="resumo-sub">
+      <div class="resumo-sub-title">Total por fase (kg)</div>
+      ${fasesHTML}
+    </div>
+
+    <div class="resumo-sub">
+      <div class="resumo-sub-title">Total por unidade</div>
+      ${unidsHTML}
+    </div>
+
+    <div class="resumo-sub">
+      <div class="resumo-sub-title">Total por cliente</div>
+      <div class="resumo-cli-header">
+        <div></div>
+        <div class="resumo-cli-hcol">Cliente</div>
+        <div class="resumo-cli-hcol right">Total kg</div>
+        <div class="resumo-cli-hcol right">%</div>
+      </div>
+      ${clientesHTML}
+      <div class="resumo-cli-total">
+        <div></div>
+        <div class="resumo-cli-total-lbl">Total geral</div>
+        <div class="resumo-cli-total-val">${nf(totalKgGeral)}</div>
+        <div class="resumo-cli-total-pct">100%</div>
+      </div>
+    </div>
+  `;
+
+  overlay.classList.add("aberta");
+  document.body.style.overflow = "hidden";
+}
+
+function fecharResumo(e) {
+  if (e && e.target !== document.getElementById("resumo-overlay")) return;
+  document.getElementById("resumo-overlay").classList.remove("aberta");
+  document.body.style.overflow = "";
 }
 
 // ════════════════════════════════════════════════
